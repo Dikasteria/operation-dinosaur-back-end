@@ -7,15 +7,9 @@ exports.up = function(knex) {
       .notNullable();
     medsTable.string("type").notNullable();
     medsTable.timestamp("due").notNullable();
-    medsTable
-      .boolean("taken")
-      .notNullable()
-      .defaultTo(false);
+    medsTable.boolean("taken").defaultTo(false);
     medsTable.timestamp("taken_at");
-    medsTable
-      .integer("status")
-      .defaultTo(0)
-      .notNullable();
+    medsTable.integer("status").defaultTo(0);
   });
 };
 
