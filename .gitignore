@@ -1,3 +1,5 @@
-./node_modules
-./config.js
-./knexfile.js
+node_modules
+config.js
+knexfile.js
+output.txt
+db-test.sql
