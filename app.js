@@ -1,5 +1,9 @@
-const { router } = require("./routers/");
-const { express } = require("express");
+const { router } = require("./server/routers/apiRouter");
+const express = require("express");
 const app = express();
+const cors = require("cors");
+
+app.use(express.json());
+app.use(cors());
 
 module.exports = app;
