@@ -1,40 +1,35 @@
-module.exports = {
-  development: {
-    client: "sqlite3",
-    connection: {
-      filename: "./dev.sqlite3"
-    }
-  },
+const ENV = process.env.NODE_ENV || "development";
+const { DB_URL } = process.env;
+const { login } = require("./config");
 
-  staging: {
-    client: "postgresql",
-    connection: {
-      database: "my_db",
-      user: "dikasteria",
-      password: "password"
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: "knex_migrations"
-    }
+const baseConfig = {
+  client: "pg",
+  migrations: {
+    directory: "./db/migrations"
   },
-
-  production: {
-    client: "postgresql",
-    connection: {
-      database: "my_db",
-      user: "dikasteria",
-      password: "password"
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: "knex_migrations"
-    }
+  seeds: {
+    directory: "./db/seeds"
   }
 };
+
+const customConfig = {
+  development: {
+    connection: {
+      database: "op-dino-dev",
+      username: login.username,
+      password: login.password
+    }
+  },
+  test: {
+    connection: {
+      database: "op-dino-test",
+      username: login.username,
+      password: login.password
+    }
+  },
+  production: {
+    connection: `${DB_URL}?ssl=true`
+  }
+};
+
+module.exports = { ...customConfig[ENV], ...baseConfig };
