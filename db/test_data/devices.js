@@ -10,5 +10,9 @@ module.exports = [
   {
     user_id: 2,
     push_key: "83ffjfjf"
+  },
+  {
+    user_id: 1,
+    push_key: "858djdhd"
   }
 ];
