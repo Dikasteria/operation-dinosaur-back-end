@@ -5,4 +5,4 @@ const { usersRouter } = require("./usersRouter");
 // apiRouter.route("/").all(errHandle405);
 apiRouter.use("/users", usersRouter);
 
-module.exports = apiRouter;
+module.exports = { apiRouter };

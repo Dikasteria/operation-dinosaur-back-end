@@ -1,3 +1,7 @@
+const { postUser } = require("../models/");
+
 exports.addUser = (req, res, next) => {
-  console.log("adding user");
+  postUser({ ...req.body }).then(user => {
+    res.status(201).send({ user });
+  });
 };

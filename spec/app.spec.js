@@ -5,6 +5,7 @@ const chai = require("chai");
 const { expect } = require("chai");
 const chaiSorted = require("chai-sorted");
 const { connection } = require("../server/connection");
+
 chai.use(chaiSorted);
 
 describe("/API", () => {
@@ -19,7 +20,7 @@ describe("/API", () => {
           .send(user)
           .expect(201)
           .then(({ body: { user } }) => {
-            expect(user).to.include.keys("user_id", "first_name", "surname");
+            expect(user).to.include.keys("id", "first_name", "surname");
           });
       });
     });
