@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS op-dino-test;
-DROP DATABASE IF EXISTS op-dino-dev;
+DROP DATABASE IF EXISTS op_dino_test;
+DROP DATABASE IF EXISTS op_dino_dev;
 
-CREATE DATABASE op-dino-test;
-CREATE DATABASE op-dino-dev;
+CREATE DATABASE op_dino_test;
+CREATE DATABASE op_dino_dev;
 

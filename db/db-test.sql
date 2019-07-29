@@ -1,4 +1,4 @@
-\c op-dino-test
+\c op_dino_test
 
 SELECT * from users;
 

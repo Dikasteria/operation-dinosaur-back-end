@@ -1,6 +1,7 @@
 const { users, devices, events, meds, quiz } = require("../index");
+const { formatDate } = require("../utils/utils");
 
-exports.seed = function(knex, Promise) {
+exports.seed = function(knex, test) {
   return knex.migrate
     .rollback()
     .then(() => {
@@ -10,15 +11,20 @@ exports.seed = function(knex, Promise) {
       return knex("users").insert(users);
     })
     .then(() => {
-      const devicesInsertions = knex("devices").insert(devices);
-      const eventsInsertions = knex("events").insert(events);
-      const medsInsertions = knex("meds").insert(meds);
-      const quizInsertions = knex("quiz").insert(quiz);
-      return Promise.all([
-        devicesInsertions,
-        eventsInsertions,
-        medsInsertions,
-        quizInsertions
-      ]);
+      return knex("devices").insert(devices);
+    })
+    .then(() => {
+      const formattedEvents = formatDate(events, "time");
+      return knex("events").insert(formattedEvents);
+    })
+    .then(() => {
+      let formattedMeds = formatDate(meds, "due");
+      formattedMeds = formatDate(formattedMeds, "taken_at");
+      return knex("meds").insert(formattedMeds);
+    })
+    .then(() => {
+      let formattedQuiz = formatDate(quiz, "due");
+      formattedQuiz = formatDate(formattedQuiz, "completed_at");
+      return knex("quiz").insert(formattedQuiz);
     });
 };
