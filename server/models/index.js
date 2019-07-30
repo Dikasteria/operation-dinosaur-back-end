@@ -1,4 +1,4 @@
 const { postUser } = require("./userModels");
-const { getDevices } = require("./devicesModels");
+const { getDevices, postDevice } = require("./devicesModels");
 
-module.exports = { postUser, getDevices };
+module.exports = { postUser, getDevices, postDevice };

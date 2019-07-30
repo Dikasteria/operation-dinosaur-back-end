@@ -37,5 +37,36 @@ describe("/api", () => {
           });
       });
     });
+    describe("POST", () => {
+      it("adds a new device", () => {
+        const device = { push_key: "84jjdjd" };
+        return request
+          .post("/api/devices/1")
+          .send(device)
+          .expect(201)
+          .then(({ body: { device } }) => {
+            expect(device).to.include.keys("id", "user_id", "push_key");
+          });
+      });
+    });
+  });
+  describe("Schedule", () => {
+    describe("GET", () => {
+      it("gets all devices for a user", () => {
+        return request
+          .get("/api/meds/1")
+          .expect(200)
+          .then(({ body: { meds } }) => {
+            expect(meds.length).to.equal(1);
+            expect(meds[0]).to.contain.keys(
+              "id",
+              "user_id",
+              "type",
+              "due",
+              "taken"
+            );
+          });
+      });
+    });
   });
 });

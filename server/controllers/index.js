@@ -1,4 +1,4 @@
 const { addUser } = require("./usersController");
-const { fetchDevices } = require("./devicesControllers");
+const { fetchDevices, addDevice } = require("./devicesControllers");
 
-module.exports = { addUser, fetchDevices };
+module.exports = { addUser, fetchDevices, addDevice };
