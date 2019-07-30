@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "chai": "^4.2.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "knex": "^0.19.1",
     "nodemon": "^1.19.1",
@@ -12,10 +13,20 @@
     "sqlite3": "^4.0.9"
   },
   "devDependencies": {
-    "mocha": "^6.2.0"
+    "chai-sorted": "^0.2.0",
+    "mocha": "^6.2.0",
+    "supertest": "^4.0.2"
   },
   "scripts": {
-    "test": "mocha"
+    "start": "node listen.js",
+    "setup-dbs": "psql -f ./db/setup.sql",
+    "seed": "knex seed:run",
+    "migrate-latest": "knex migrate:latest",
+    "migrate-rollback": "knex migrate: rollback",
+    "seed-test": "npm run setup-dbs && NODE_ENV=test knex seed:run",
+    "test": "npm run seed-test && mocha spec/app.spec.js",
+    "test-utils": "mocha spec/utils.spec.js",
+    "test-db-output": "psql -f ./db/db-test.sql > output.txt"
   },
   "keywords": [],
   "author": "",
