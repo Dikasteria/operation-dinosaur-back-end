@@ -36,6 +36,14 @@ describe('/api', () => {
             expect(devices[0]).to.contain.keys('id', 'user_id', 'push_key');
           });
       });
+      it('status:404 for an invalid user id', () => {
+        return request
+          .get('/api/devices/4')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('not found');
+          });
+      });
     });
     describe('POST', () => {
       it('adds a new device', () => {
@@ -65,6 +73,14 @@ describe('/api', () => {
               'due',
               'taken'
             );
+          });
+      });
+      it('status:404 for an invalid user id', () => {
+        return request
+          .get('/api/meds/4')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('not found');
           });
       });
     });
@@ -119,6 +135,14 @@ describe('/api', () => {
               'time',
               'description'
             );
+          });
+      });
+      it('status:404 for an invalid user id', () => {
+        return request
+          .get('/api/events/4')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('not found');
           });
       });
     });
@@ -176,6 +200,14 @@ describe('/api', () => {
               'slowness',
               'tremor'
             );
+          });
+      });
+      it('status:404 for an invalid user id', () => {
+        return request
+          .get('/api/quiz/4')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('not found');
           });
       });
     });
