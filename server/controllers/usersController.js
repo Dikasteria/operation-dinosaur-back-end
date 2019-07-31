@@ -1,11 +1,5 @@
 const { postUser, getUser } = require('../models/');
 
-exports.addUser = (req, res, next) => {
-  postUser({ ...req.body }).then(user => {
-    res.status(201).send({ user });
-  });
-};
-
 exports.fetchUser = (req, res, next) => {
   getUser({ ...req.params })
     .then(users => {
@@ -15,6 +9,14 @@ exports.fetchUser = (req, res, next) => {
         const user = users[0];
         res.status(200).send({ user });
       }
+    })
+    .catch(next);
+};
+
+exports.addUser = (req, res, next) => {
+  postUser({ ...req.body })
+    .then(user => {
+      res.status(201).send({ user });
     })
     .catch(next);
 };

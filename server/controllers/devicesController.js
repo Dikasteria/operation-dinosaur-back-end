@@ -16,7 +16,9 @@ exports.fetchDevices = (req, res, next) => {
 };
 
 exports.addDevice = (req, res, next) => {
-  postDevice({ ...req.params, ...req.body }).then(device => {
-    res.status(201).send({ device });
-  });
+  postDevice({ ...req.params, ...req.body })
+    .then(device => {
+      res.status(201).send({ device });
+    })
+    .catch(next);
 };

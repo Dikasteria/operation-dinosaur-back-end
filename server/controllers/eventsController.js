@@ -13,19 +13,25 @@ exports.fetchEvents = (req, res, next) => {
 };
 
 exports.addEvent = (req, res, next) => {
-  postEvent({ ...req.params, ...req.body }).then(event => {
-    res.status(201).send({ event });
-  });
+  postEvent({ ...req.params, ...req.body })
+    .then(event => {
+      res.status(201).send({ event });
+    })
+    .catch(next);
 };
 
 exports.updateEvent = (req, res, next) => {
-  patchEvent({ ...req.params, ...req.body }).then(patchedEvent => {
-    res.status(200).send({ patchedEvent });
-  });
+  patchEvent({ ...req.params, ...req.body })
+    .then(patchedEvent => {
+      res.status(200).send({ patchedEvent });
+    })
+    .catch(next);
 };
 
 exports.removeEvent = (req, res, next) => {
-  deleteEvent({ ...req.params }).then(() => {
-    res.status(204).send({});
-  });
+  deleteEvent({ ...req.params })
+    .then(() => {
+      res.status(204).send({});
+    })
+    .catch(next);
 };

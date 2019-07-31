@@ -13,19 +13,25 @@ exports.fetchMeds = (req, res, next) => {
 };
 
 exports.addMed = (req, res, next) => {
-  postMed({ ...req.params, ...req.body }).then(med => {
-    res.status(201).send({ med });
-  });
+  postMed({ ...req.params, ...req.body })
+    .then(med => {
+      res.status(201).send({ med });
+    })
+    .catch(next);
 };
 
 exports.updateMed = (req, res, next) => {
-  patchMed({ ...req.params, ...req.body }).then(patchedMed => {
-    res.status(200).send({ patchedMed });
-  });
+  patchMed({ ...req.params, ...req.body })
+    .then(patchedMed => {
+      res.status(200).send({ patchedMed });
+    })
+    .catch(next);
 };
 
 exports.removeMed = (req, res, next) => {
-  deleteMed({ ...req.params }).then(() => {
-    res.status(204).send({});
-  });
+  deleteMed({ ...req.params })
+    .then(() => {
+      res.status(204).send({});
+    })
+    .catch(next);
 };

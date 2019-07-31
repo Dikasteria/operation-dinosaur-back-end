@@ -13,19 +13,25 @@ exports.fetchQuiz = (req, res, next) => {
 };
 
 exports.addQuiz = (req, res, next) => {
-  postQuiz({ ...req.params, ...req.body }).then(quiz => {
-    res.status(201).send({ quiz });
-  });
+  postQuiz({ ...req.params, ...req.body })
+    .then(quiz => {
+      res.status(201).send({ quiz });
+    })
+    .catch(next);
 };
 
 exports.updateQuiz = (req, res, next) => {
-  patchQuiz({ ...req.params, ...req.body }).then(patchedQuiz => {
-    res.status(200).send({ patchedQuiz });
-  });
+  patchQuiz({ ...req.params, ...req.body })
+    .then(patchedQuiz => {
+      res.status(200).send({ patchedQuiz });
+    })
+    .catch(next);
 };
 
 exports.removeQuiz = (req, res, next) => {
-  deleteQuiz({ ...req.params }).then(() => {
-    res.status(204).send({});
-  });
+  deleteQuiz({ ...req.params })
+    .then(() => {
+      res.status(204).send({});
+    })
+    .catch(next);
 };
