@@ -140,6 +140,43 @@ describe('/api', () => {
             );
           });
       });
+      it('status:400 when posting an invalid foreign key', () => {
+        const time = new Date(1564412400000);
+        const med = { user_id: 314, type: 'codeine', due: time };
+        return request
+          .post('/api/meds/1')
+          .send(med)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+      it('status:400 when missing required columns', () => {
+        const med = { type: 'codeine' };
+        return request
+          .post('/api/meds/1')
+          .send(med)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+      it('status:400 when adding non-existent columns', () => {
+        const time = new Date(1564412400000);
+        const med = {
+          test: 'not-a-column',
+          user_id: 314,
+          type: 'codeine',
+          due: time
+        };
+        return request
+          .post('/api/meds/1')
+          .send(med)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
     });
   });
   describe('/meds/:med_id', () => {
@@ -197,6 +234,15 @@ describe('/api', () => {
               'time',
               'description'
             );
+          });
+      });
+      it('status:400 when missing required columns', () => {
+        return request
+          .post('/api/events/1')
+          .send({})
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
           });
       });
     });
@@ -276,6 +322,21 @@ describe('/api', () => {
               'slowness',
               'tremor'
             );
+          });
+      });
+      it('status:400 when missing required columns', () => {
+        return request
+          .post('/api/quiz/1')
+          .send({
+            status: 1,
+            mood: 1,
+            stiffness: 1,
+            slowness: 1,
+            tremor: 1
+          })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
           });
       });
     });
