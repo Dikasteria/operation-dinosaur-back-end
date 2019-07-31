@@ -7,6 +7,12 @@ const {
   updateEvent,
   removeEvent
 } = require('./eventsController');
+const {
+  fetchQuiz,
+  addQuiz,
+  updateQuiz,
+  removeQuiz
+} = require('./quizController');
 
 module.exports = {
   addUser,
@@ -19,5 +25,9 @@ module.exports = {
   fetchEvents,
   addEvent,
   updateEvent,
-  removeEvent
+  removeEvent,
+  fetchQuiz,
+  addQuiz,
+  updateQuiz,
+  removeQuiz
 };
