@@ -26,3 +26,19 @@ module.exports = {
   patchQuiz,
   deleteQuiz
 };
+
+```suggestion
+const usermodels = require('./userModel');
+const deviceModels = require('./devicesModel');
+const medsModels = require('./medsModel');
+const eventModels = require('./eventsModel');
+const quizModels = require('./quizModel');
+
+module.exports = {
+  ...usermodels,
+  ...deviceModels,
+  ...medsModels,
+  ...eventModels,
+  ...quizModels
+};
+```
