@@ -1,14 +1,10 @@
 const { connection } = require('../connection');
 
 exports.getEvents = ({ user_id }) => {
-  return connection('events')
-    .where({ user_id })
-    .returning('*')
-    .then(returnedEvents => {
-      if (returnedEvents.length < 1)
-        return Promise.reject({ status: 404, msg: 'No Events found' });
-      else return returnedEvents;
-    });
+  return connection
+    .select('*')
+    .from('events')
+    .where({ user_id });
 };
 
 exports.postEvent = ({ user_id, description }) => {

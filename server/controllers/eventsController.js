@@ -1,9 +1,15 @@
 const { getEvents, postEvent, patchEvent, deleteEvent } = require('../models/');
 
 exports.fetchEvents = (req, res, next) => {
-  getEvents({ ...req.params }).then(events => {
-    res.status(200).send({ events });
-  });
+  getEvents({ ...req.params })
+    .then(events => {
+      if (events.length < 1) {
+        res.status(404).send({ msg: 'No events found' });
+      } else {
+        res.status(200).send({ events });
+      }
+    })
+    .catch(next);
 };
 
 exports.addEvent = (req, res, next) => {
