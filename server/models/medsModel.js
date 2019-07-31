@@ -1,14 +1,10 @@
 const { connection } = require('../connection');
 
 exports.getMeds = ({ user_id }) => {
-  return connection('meds')
-    .where({ user_id })
-    .returning('*')
-    .then(returnedMeds => {
-      if (returnedMeds.length < 1)
-        return Promise.reject({ status: 404, msg: 'No medications found' });
-      else return returnedMeds;
-    });
+  return connection
+    .select('*')
+    .from('meds')
+    .where({ user_id });
 };
 
 exports.postMed = ({ user_id, type, due }) => {

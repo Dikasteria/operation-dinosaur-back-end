@@ -1,9 +1,15 @@
 const { getMeds, postMed, patchMed, deleteMed } = require('../models/');
 
 exports.fetchMeds = (req, res, next) => {
-  getMeds({ ...req.params }).then(meds => {
-    res.status(200).send({ meds });
-  });
+  getMeds({ ...req.params })
+    .then(meds => {
+      if (meds.length < 1) {
+        res.status(404).send({ msg: 'No medications found' });
+      } else {
+        res.status(200).send({ meds });
+      }
+    })
+    .catch(next);
 };
 
 exports.addMed = (req, res, next) => {
