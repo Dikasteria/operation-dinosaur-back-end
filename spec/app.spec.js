@@ -160,24 +160,77 @@ describe('/api', () => {
   describe('/quiz/:user_id', () => {
     describe('GET', () => {
       it('gets all questionnaire responses', () => {
-        //get all questionnaire responses
+        return request
+          .get('/api/quiz/1')
+          .expect(200)
+          .then(({ body: { quizzes } }) => {
+            expect(quizzes[0]).to.contain.keys(
+              'id',
+              'user_id',
+              'due',
+              'completed',
+              'completed_at',
+              'status',
+              'mood',
+              'stiffness',
+              'slowness',
+              'tremor'
+            );
+          });
       });
     });
     describe('POST', () => {
       it('posts a new questionnaire response', () => {
-        //post new questionnaire response
+        const due = new Date(1564412400000);
+        return request
+          .post('/api/quiz/1')
+          .send({
+            due,
+            status: 1,
+            mood: 1,
+            stiffness: 1,
+            slowness: 1,
+            tremor: 1
+          })
+          .expect(201)
+          .then(({ body: { quiz } }) => {
+            expect(quiz).to.contain.keys(
+              'id',
+              'user_id',
+              'due',
+              'completed',
+              'completed_at',
+              'status',
+              'mood',
+              'stiffness',
+              'slowness',
+              'tremor'
+            );
+          });
       });
     });
   });
   describe('/quiz/:quiz_id', () => {
     describe('PATCH', () => {
       it('updates questionnnaire result', () => {
-        //updates questionnnaire result
+        return request
+          .patch('/api/quiz/1')
+          .send({
+            status: 0,
+            mood: 0,
+            stiffness: 0,
+            slowness: 0,
+            tremor: 5
+          })
+          .expect(200)
+          .then(({ body: { patchedQuiz } }) => {
+            expect(patchedQuiz.tremor).to.eql(5);
+          });
       });
     });
     describe('DELETE', () => {
       it('deletes a questionnaire result', () => {
-        //remove quiz result
+        return request.delete('/api/quiz/1').expect(204);
       });
     });
   });
