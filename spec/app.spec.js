@@ -190,6 +190,15 @@ describe('/api', () => {
             expect(patchedMed.taken).to.eql(true);
           });
       });
+      it('status:400 when patching a value of incorrect type', () => {
+        return request
+          .patch('/api/meds/1')
+          .send({ taken: 314 })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
     });
     describe('DELETE', () => {
       it('Deletes a medication', () => {
@@ -256,6 +265,15 @@ describe('/api', () => {
           .expect(200)
           .then(({ body: { patchedEvent } }) => {
             expect(patchedEvent.description).to.eql('new description');
+          });
+      });
+      it('status:400 when patching a value of incorrect type', () => {
+        return request
+          .patch('/api/events/1')
+          .send({ description: 314 })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
           });
       });
     });
@@ -356,6 +374,21 @@ describe('/api', () => {
           .expect(200)
           .then(({ body: { patchedQuiz } }) => {
             expect(patchedQuiz.tremor).to.eql(5);
+          });
+      });
+      it('status:400 when patching a value of incorrect type', () => {
+        return request
+          .patch('/api/quiz/1')
+          .send({
+            status: 'not a number!',
+            mood: 0,
+            stiffness: 0,
+            slowness: 0,
+            tremor: 5
+          })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
           });
       });
     });
