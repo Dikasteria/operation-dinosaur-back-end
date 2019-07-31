@@ -7,6 +7,7 @@ const {
   patchEvent,
   deleteEvent
 } = require('./eventsModel');
+const { getQuiz, postQuiz, patchQuiz, deleteQuiz } = require('./quizModel');
 
 module.exports = {
   postUser,
@@ -19,5 +20,9 @@ module.exports = {
   getEvents,
   postEvent,
   patchEvent,
-  deleteEvent
+  deleteEvent,
+  getQuiz,
+  postQuiz,
+  patchQuiz,
+  deleteQuiz
 };
