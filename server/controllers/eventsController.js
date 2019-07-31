@@ -21,11 +21,15 @@ exports.addEvent = (req, res, next) => {
 };
 
 exports.updateEvent = (req, res, next) => {
-  patchEvent({ ...req.params, ...req.body })
-    .then(patchedEvent => {
-      res.status(200).send({ patchedEvent });
-    })
-    .catch(next);
+  if (typeof req.body.description === 'string') {
+    patchEvent({ ...req.params, ...req.body })
+      .then(patchedEvent => {
+        res.status(200).send({ patchedEvent });
+      })
+      .catch(next);
+  } else {
+    res.status(400).send({ msg: 'bad request' });
+  }
 };
 
 exports.removeEvent = (req, res, next) => {
