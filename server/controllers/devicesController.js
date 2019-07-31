@@ -1,4 +1,4 @@
-const { getDevices, postDevice } = require("../models/");
+const { getDevices, postDevice } = require('../models');
 
 exports.fetchDevices = (req, res, next) => {
   getDevices({ ...req.params }).then(devices => {

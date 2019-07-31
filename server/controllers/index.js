@@ -1,4 +1,13 @@
-const { addUser } = require("./usersController");
-const { fetchDevices, addDevice } = require("./devicesControllers");
+const userControllers = require('./usersController');
+const deviceControllers = require('./devicesController');
+const medsControllers = require('./medsController');
+const eventControllers = require('./eventsController');
+const quizControllers = require('./quizController');
 
-module.exports = { addUser, fetchDevices, addDevice };
+module.exports = {
+  ...userControllers,
+  ...deviceControllers,
+  ...medsControllers,
+  ...eventControllers,
+  ...quizControllers
+};

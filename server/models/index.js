@@ -1,4 +1,13 @@
-const { postUser } = require("./userModels");
-const { getDevices, postDevice } = require("./devicesModels");
+const userModels = require('./userModel');
+const deviceModels = require('./devicesModel');
+const medsModels = require('./medsModel');
+const eventModels = require('./eventsModel');
+const quizModels = require('./quizModel');
 
-module.exports = { postUser, getDevices, postDevice };
+module.exports = {
+  ...userModels,
+  ...deviceModels,
+  ...medsModels,
+  ...eventModels,
+  ...quizModels
+};
