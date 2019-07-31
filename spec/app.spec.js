@@ -76,6 +76,24 @@ describe('/api', () => {
             expect(device).to.include.keys('id', 'user_id', 'push_key');
           });
       });
+      it('status:400 when missing required columns', () => {
+        return request
+          .post('/api/devices/1')
+          .send({})
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+      it('status:400 when adding non-existent columns', () => {
+        return request
+          .post('/api/devices/1')
+          .send({ test: 'not-a-column' })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
     });
   });
   describe('/meds/:user_id', () => {
