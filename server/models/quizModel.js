@@ -1,14 +1,10 @@
 const { connection } = require('../connection');
 
 exports.getQuiz = ({ user_id }) => {
-  return connection('quiz')
-    .where({ user_id })
-    .returning('*')
-    .then(returnedQuiz => {
-      if (returnedQuiz.length < 1)
-        return Promise.reject({ status: 404, msg: 'No quiz found' });
-      else return returnedQuiz;
-    });
+  return connection
+    .select('*')
+    .from('quiz')
+    .where({ user_id });
 };
 
 exports.postQuiz = ({
