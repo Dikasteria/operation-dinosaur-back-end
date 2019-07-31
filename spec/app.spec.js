@@ -25,6 +25,26 @@ describe('/api', () => {
       });
     });
   });
+  describe('/users/:user_id', () => {
+    describe('GET', () => {
+      it('gets a user by id', () => {
+        return request
+          .get('/api/users/1')
+          .expect(200)
+          .then(({ body: { user } }) => {
+            expect(devices).to.contain.keys('id', 'first_name', 'surname');
+          });
+      });
+      it('status:404 for an invalid user id', () => {
+        return request
+          .get('/api/users/4')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('not found');
+          });
+      });
+    });
+  });
   describe('/devices/:user_id', () => {
     describe('GET', () => {
       it('gets all devices for a user', () => {
