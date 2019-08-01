@@ -1,7 +1,12 @@
-const { getCode } = require('../models/');
+const { getCode, addCode, deleteCode } = require('../models/');
 
 exports.fetchCode = (req, res, next) => {
   getCode().then(code => {
-    res.status(200).send({ code });
+    addCode(code).then(([{ code }]) => {
+      res.status(200).send({ code });
+      setTimeout(() => {
+        deleteCode(code);
+      }, 9000);
+    });
   });
 };

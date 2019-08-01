@@ -17,3 +17,16 @@ exports.getCode = () => {
       }
     });
 };
+
+exports.addCode = code => {
+  return connection
+    .insert({ code })
+    .into('codes')
+    .returning('*');
+};
+
+exports.deleteCode = code => {
+  return connection('codes')
+    .where({ code })
+    .delete();
+};
