@@ -266,7 +266,6 @@ describe('/api', () => {
           .send({ description: 'new description' })
           .expect(200)
           .then(({ body: { patchedEvent } }) => {
-            console.log(patchedEvent);
             expect(patchedEvent.description).to.eql('new description');
           });
       });
@@ -293,7 +292,6 @@ describe('/api', () => {
           .get('/api/quiz/1')
           .expect(200)
           .then(({ body: { quizzes } }) => {
-            console.log(quizzes);
             expect(quizzes[0]).to.contain.keys(
               'id',
               'user_id',
