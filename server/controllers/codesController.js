@@ -1,9 +1,6 @@
-const {} = require('../models/');
+const { getCode } = require('../models/');
 
 exports.fetchCode = (req, res, next) => {
-  //getCode - generates new random code
-  //        - checks that it doesn't already exist,
-  //        - adds code to a new row in
-  //
-  console.log('fetching a code...');
+  const code = getCode();
+  res.status(200).send({ code });
 };

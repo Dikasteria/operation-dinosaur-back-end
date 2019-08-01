@@ -27,7 +27,7 @@ exports.postQuiz = ({ user_id, mood, stiffness, slowness, tremor }) => {
 };
 
 exports.patchQuiz = ({ quiz_id, mood, stiffness, slowness, tremor }) => {
-  const newQuizDetails = { status, mood, stiffness, slowness, tremor };
+  const newQuizDetails = { mood, stiffness, slowness, tremor };
   return connection('quiz')
     .where({ id: quiz_id })
     .update(newQuizDetails)

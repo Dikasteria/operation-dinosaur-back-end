@@ -266,7 +266,6 @@ describe('/api', () => {
           .send({ description: 'new description' })
           .expect(200)
           .then(({ body: { patchedEvent } }) => {
-            console.log(patchedEvent);
             expect(patchedEvent.description).to.eql('new description');
           });
       });
@@ -287,20 +286,16 @@ describe('/api', () => {
     });
   });
   describe('/quiz/:user_id', () => {
-    describe.only('GET', () => {
+    describe('GET', () => {
       it('gets all questionnaire responses', () => {
         return request
           .get('/api/quiz/1')
           .expect(200)
           .then(({ body: { quizzes } }) => {
-            console.log(quizzes);
             expect(quizzes[0]).to.contain.keys(
               'id',
               'user_id',
-              'due',
-              'completed',
               'completed_at',
-              'status',
               'mood',
               'stiffness',
               'slowness',
@@ -339,19 +334,6 @@ describe('/api', () => {
               'slowness',
               'tremor'
             );
-          });
-      });
-      it('status:400 when missing required columns', () => {
-        return request
-          .post('/api/quiz/1')
-          .send({
-            stiffness: 1,
-            slowness: 1,
-            tremor: 1
-          })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal('bad request');
           });
       });
     });
