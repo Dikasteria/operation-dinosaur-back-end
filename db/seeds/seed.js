@@ -1,5 +1,5 @@
-const { users, devices, events, meds, quiz } = require("../index");
-const { formatDate } = require("../utils/utils");
+const { codes, users, devices, events, meds, quiz } = require('../index');
+const { formatDate } = require('../utils/utils');
 
 exports.seed = function(knex, test) {
   return knex.migrate
@@ -8,23 +8,26 @@ exports.seed = function(knex, test) {
       return knex.migrate.latest();
     })
     .then(() => {
-      return knex("users").insert(users);
+      return knex('codes').insert(codes);
     })
     .then(() => {
-      return knex("devices").insert(devices);
+      return knex('users').insert(users);
     })
     .then(() => {
-      const formattedEvents = formatDate(events, "time");
-      return knex("events").insert(formattedEvents);
+      return knex('devices').insert(devices);
     })
     .then(() => {
-      let formattedMeds = formatDate(meds, "due");
-      formattedMeds = formatDate(formattedMeds, "taken_at");
-      return knex("meds").insert(formattedMeds);
+      const formattedEvents = formatDate(events, 'time');
+      return knex('events').insert(formattedEvents);
     })
     .then(() => {
-      let formattedQuiz = formatDate(quiz, "due");
-      formattedQuiz = formatDate(formattedQuiz, "completed_at");
-      return knex("quiz").insert(formattedQuiz);
+      let formattedMeds = formatDate(meds, 'due');
+      formattedMeds = formatDate(formattedMeds, 'taken_at');
+      return knex('meds').insert(formattedMeds);
+    })
+    .then(() => {
+      let formattedQuiz = formatDate(quiz, 'due');
+      formattedQuiz = formatDate(formattedQuiz, 'completed_at');
+      return knex('quiz').insert(formattedQuiz);
     });
 };

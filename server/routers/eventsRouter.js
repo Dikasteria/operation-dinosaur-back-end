@@ -6,6 +6,7 @@ const {
   updateEvent,
   removeEvent
 } = require('../controllers/');
+const { send405Error } = require('../../errors');
 
 eventsRouter
   .route('/:user_id')
@@ -15,6 +16,7 @@ eventsRouter
 eventsRouter
   .route('/:event_id')
   .patch(updateEvent)
-  .delete(removeEvent);
+  .delete(removeEvent)
+  .all(send405Error);
 
 module.exports = { eventsRouter };

@@ -6,6 +6,7 @@ const {
   updateQuiz,
   removeQuiz
 } = require('../controllers/');
+const { send405Error } = require('../../errors');
 
 quizRouter
   .route('/:user_id')
@@ -15,6 +16,7 @@ quizRouter
 quizRouter
   .route('/:quiz_id')
   .patch(updateQuiz)
-  .delete(removeQuiz);
+  .delete(removeQuiz)
+  .all(send405Error);
 
 module.exports = { quizRouter };

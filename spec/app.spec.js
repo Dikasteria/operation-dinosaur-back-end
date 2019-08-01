@@ -35,14 +35,14 @@ describe('/api', () => {
             expect(user).to.contain.keys('id', 'first_name', 'surname');
           });
       });
-      // it('status:404 for an invalid user id', () => {
-      //   return request
-      //     .get('/api/users/4')
-      //     .expect(404)
-      //     .then(({ body: { msg } }) => {
-      //       expect(msg).to.equal('not found');
-      //     });
-      // });
+      it('status:404 for an invalid user id', () => {
+        return request
+          .get('/api/users/4')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('No user found');
+          });
+      });
     });
   });
   describe('/devices/:user_id', () => {
@@ -56,14 +56,14 @@ describe('/api', () => {
             expect(devices[0]).to.contain.keys('id', 'user_id', 'push_key');
           });
       });
-      // it('status:404 for an invalid user id', () => {
-      //   return request
-      //     .get('/api/devices/4')
-      //     .expect(404)
-      //     .then(({ body: { msg } }) => {
-      //       expect(msg).to.equal('not found');
-      //     });
-      // });
+      it('status:404 for an invalid user id', () => {
+        return request
+          .get('/api/devices/4')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('No devices found');
+          });
+      });
     });
     describe('POST', () => {
       it('adds a new device', () => {
@@ -74,6 +74,24 @@ describe('/api', () => {
           .expect(201)
           .then(({ body: { device } }) => {
             expect(device).to.include.keys('id', 'user_id', 'push_key');
+          });
+      });
+      it('status:400 when missing required columns', () => {
+        return request
+          .post('/api/devices/1')
+          .send({})
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+      it('status:400 when adding non-existent columns', () => {
+        return request
+          .post('/api/devices/1')
+          .send({ test: 'not-a-column' })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
           });
       });
     });
@@ -91,18 +109,20 @@ describe('/api', () => {
               'user_id',
               'type',
               'due',
-              'taken'
+              'taken',
+              'taken_at',
+              'status'
             );
           });
       });
-      // it('status:404 for an invalid user id', () => {
-      //   return request
-      //     .get('/api/meds/4')
-      //     .expect(404)
-      //     .then(({ body: { msg } }) => {
-      //       expect(msg).to.equal('not found');
-      //     });
-      // });
+      it('status:404 for an invalid user id', () => {
+        return request
+          .get('/api/meds/4')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('No medications found');
+          });
+      });
     });
     describe('POST', () => {
       it('adds a new medication', () => {
@@ -122,6 +142,43 @@ describe('/api', () => {
             );
           });
       });
+      it('status:400 when posting an invalid foreign key', () => {
+        const time = new Date(1564412400000);
+        const med = { user_id: 314, type: 'codeine', due: time };
+        return request
+          .post('/api/meds/1')
+          .send(med)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+      it('status:400 when missing required columns', () => {
+        const med = { type: 'codeine' };
+        return request
+          .post('/api/meds/1')
+          .send(med)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+      it('status:400 when adding non-existent columns', () => {
+        const time = new Date(1564412400000);
+        const med = {
+          test: 'not-a-column',
+          user_id: 314,
+          type: 'codeine',
+          due: time
+        };
+        return request
+          .post('/api/meds/1')
+          .send(med)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
     });
   });
   describe('/meds/:med_id', () => {
@@ -133,6 +190,15 @@ describe('/api', () => {
           .expect(200)
           .then(({ body: { patchedMed } }) => {
             expect(patchedMed.taken).to.eql(true);
+          });
+      });
+      it('status:400 when patching a value of incorrect type', () => {
+        return request
+          .patch('/api/meds/1')
+          .send({ taken: 314 })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
           });
       });
     });
@@ -157,14 +223,14 @@ describe('/api', () => {
             );
           });
       });
-      // it('status:404 for an invalid user id', () => {
-      //   return request
-      //     .get('/api/events/4')
-      //     .expect(404)
-      //     .then(({ body: { msg } }) => {
-      //       expect(msg).to.equal('not found');
-      //     });
-      // });
+      it('status:404 for an invalid user id', () => {
+        return request
+          .get('/api/events/4')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('No events found');
+          });
+      });
     });
     describe('POST', () => {
       it('adds a new event', () => {
@@ -181,6 +247,15 @@ describe('/api', () => {
             );
           });
       });
+      it('status:400 when missing required columns', () => {
+        return request
+          .post('/api/events/1')
+          .send({})
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
     });
   });
   describe('/events/:event_id', () => {
@@ -191,7 +266,17 @@ describe('/api', () => {
           .send({ description: 'new description' })
           .expect(200)
           .then(({ body: { patchedEvent } }) => {
+            console.log(patchedEvent);
             expect(patchedEvent.description).to.eql('new description');
+          });
+      });
+      it('status:400 when patching a value of incorrect type', () => {
+        return request
+          .patch('/api/events/1')
+          .send({ description: 314 })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
           });
       });
     });
@@ -202,12 +287,13 @@ describe('/api', () => {
     });
   });
   describe('/quiz/:user_id', () => {
-    describe('GET', () => {
+    describe.only('GET', () => {
       it('gets all questionnaire responses', () => {
         return request
           .get('/api/quiz/1')
           .expect(200)
           .then(({ body: { quizzes } }) => {
+            console.log(quizzes);
             expect(quizzes[0]).to.contain.keys(
               'id',
               'user_id',
@@ -222,14 +308,14 @@ describe('/api', () => {
             );
           });
       });
-      // it('status:404 for an invalid user id', () => {
-      //   return request
-      //     .get('/api/quiz/4')
-      //     .expect(404)
-      //     .then(({ body: { msg } }) => {
-      //       expect(msg).to.equal('not found');
-      //     });
-      // });
+      it('status:404 for an invalid user id', () => {
+        return request
+          .get('/api/quiz/4')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('No quiz found');
+          });
+      });
     });
     describe('POST', () => {
       it('posts a new questionnaire response', () => {
@@ -260,6 +346,21 @@ describe('/api', () => {
             );
           });
       });
+      it('status:400 when missing required columns', () => {
+        return request
+          .post('/api/quiz/1')
+          .send({
+            status: 1,
+            mood: 1,
+            stiffness: 1,
+            slowness: 1,
+            tremor: 1
+          })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
     });
   });
   describe('/quiz/:quiz_id', () => {
@@ -277,6 +378,21 @@ describe('/api', () => {
           .expect(200)
           .then(({ body: { patchedQuiz } }) => {
             expect(patchedQuiz.tremor).to.eql(5);
+          });
+      });
+      it('status:400 when patching a value of incorrect type', () => {
+        return request
+          .patch('/api/quiz/1')
+          .send({
+            status: 'not a number!',
+            mood: 0,
+            stiffness: 0,
+            slowness: 0,
+            tremor: 5
+          })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
           });
       });
     });
