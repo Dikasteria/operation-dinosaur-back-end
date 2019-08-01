@@ -2,12 +2,13 @@
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
-  "GET /api/codes/new": {
+  "GET /api/codes/:user_id": {
     "description": "serves a randomly generated 4 digit code",
     "queries": [],
     "exampleResponse": {
       "code": [
         {
+          "user_id": 1,
           "code": "9999"
         }
       ]
