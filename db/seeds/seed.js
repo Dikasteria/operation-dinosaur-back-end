@@ -1,5 +1,5 @@
 const { codes, users, devices, events, meds, quiz } = require('../index');
-const { formatDate } = require('../utils/utils');
+const { formatDate } = require('../../utils/formatData');
 
 exports.seed = function(knex, test) {
   return knex.migrate
