@@ -8,3 +8,10 @@ exports.formatDate = (list, key) => {
     return newObject;
   });
 };
+
+exports.formatCode = code => {
+  while (code.length < 4) {
+    code = '0' + code;
+  }
+  return code;
+};
