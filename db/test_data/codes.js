@@ -1,1 +1,1 @@
-module.exports = [{ code: 1234 }];
+module.exports = [{ code: '9999' }];

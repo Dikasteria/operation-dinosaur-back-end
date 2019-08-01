@@ -1,7 +1,7 @@
 exports.up = function(knex) {
   return knex.schema.createTable('codes', codesTable => {
     codesTable.increments('id').primary();
-    codesTable.integer('code').notNullable();
+    codesTable.text('code').notNullable();
   });
 };
 
