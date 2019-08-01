@@ -26,8 +26,7 @@ exports.seed = function(knex, test) {
       return knex('meds').insert(formattedMeds);
     })
     .then(() => {
-      let formattedQuiz = formatDate(quiz, 'due');
-      formattedQuiz = formatDate(formattedQuiz, 'completed_at');
+      let formattedQuiz = formatDate(quiz, 'completed_at');
       return knex('quiz').insert(formattedQuiz);
     });
 };
