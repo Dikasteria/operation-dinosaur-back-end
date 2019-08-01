@@ -181,10 +181,7 @@
         {
           "id": 3,
           "user_id": 1,
-          "due": "2019-07-29T15: 00: 00.000Z",
-          "completed": true,
           "completed_at": "2019-07-29T13: 00: 00.000Z",
-          "status": 3,
           "mood": 0,
           "stiffness": 1,
           "slowness": 0,
@@ -196,8 +193,6 @@
   "POST /api/quiz/:user_id:": {
     "description": "adds a new quiz to a single user",
     "exampleRequest": {
-      "due": "2019-07-29T15: 00: 00.000Z",
-      "status": 1,
       "mood": 1,
       "stiffness": 1,
       "slowness": 1,
@@ -208,10 +203,7 @@
         {
           "id": 4,
           "user_id": 1,
-          "due": "2019-07-29T15: 00: 00.000Z",
-          "completed": true,
           "completed_at": "2019-07-31T22: 08: 35.649Z",
-          "status": 1,
           "mood": 1,
           "stiffness": 1,
           "slowness": 1,
@@ -223,7 +215,6 @@
   "PATCH /api/quiz/:quiz_id": {
     "description": "updates the quiz values",
     "exampleRequest": {
-      "status": 0,
       "mood": 0,
       "stiffness": 0,
       "slowness": 0,
@@ -233,10 +224,7 @@
       "quiz": {
         "id": 1,
         "user_id": 3,
-        "due": "2019-07-29T15: 00: 00.000Z",
-        "completed": true,
         "completed_at": "2019-07-29T13: 00: 00.000Z",
-        "status": 0,
         "mood": 0,
         "stiffness": 0,
         "slowness": 0,
