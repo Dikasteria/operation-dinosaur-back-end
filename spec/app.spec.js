@@ -338,19 +338,6 @@ describe('/api', () => {
             );
           });
       });
-      it('status:400 when missing required columns', () => {
-        return request
-          .post('/api/quiz/1')
-          .send({
-            stiffness: 1,
-            slowness: 1,
-            tremor: 1
-          })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal('bad request');
-          });
-      });
     });
   });
   describe('/quiz/:quiz_id', () => {
