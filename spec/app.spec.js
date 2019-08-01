@@ -287,7 +287,7 @@ describe('/api', () => {
     });
   });
   describe('/quiz/:user_id', () => {
-    describe.only('GET', () => {
+    describe('GET', () => {
       it('gets all questionnaire responses', () => {
         return request
           .get('/api/quiz/1')
