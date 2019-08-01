@@ -6,7 +6,7 @@ exports.fetchCode = (req, res, next) => {
       res.status(200).send({ code });
       setTimeout(() => {
         deleteCode(code);
-      }, 9000);
+      }, 900000);
     });
   });
 };
