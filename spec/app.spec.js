@@ -297,10 +297,7 @@ describe('/api', () => {
             expect(quizzes[0]).to.contain.keys(
               'id',
               'user_id',
-              'due',
-              'completed',
               'completed_at',
-              'status',
               'mood',
               'stiffness',
               'slowness',
