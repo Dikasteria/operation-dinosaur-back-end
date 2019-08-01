@@ -7,22 +7,11 @@ exports.getQuiz = ({ user_id }) => {
     .where({ user_id });
 };
 
-exports.postQuiz = ({
-  user_id,
-  due,
-  status,
-  mood,
-  stiffness,
-  slowness,
-  tremor
-}) => {
+exports.postQuiz = ({ user_id, mood, stiffness, slowness, tremor }) => {
   const completed_at = new Date(Date.now());
   const quiz = {
     user_id,
-    due,
-    completed: true,
     completed_at,
-    status,
     mood,
     stiffness,
     slowness,
@@ -37,14 +26,7 @@ exports.postQuiz = ({
     });
 };
 
-exports.patchQuiz = ({
-  quiz_id,
-  status,
-  mood,
-  stiffness,
-  slowness,
-  tremor
-}) => {
+exports.patchQuiz = ({ quiz_id, mood, stiffness, slowness, tremor }) => {
   const newQuizDetails = { status, mood, stiffness, slowness, tremor };
   return connection('quiz')
     .where({ id: quiz_id })

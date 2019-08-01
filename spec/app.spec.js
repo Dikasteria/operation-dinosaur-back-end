@@ -323,8 +323,6 @@ describe('/api', () => {
         return request
           .post('/api/quiz/1')
           .send({
-            due,
-            status: 1,
             mood: 1,
             stiffness: 1,
             slowness: 1,
@@ -335,10 +333,7 @@ describe('/api', () => {
             expect(quiz).to.contain.keys(
               'id',
               'user_id',
-              'due',
-              'completed',
               'completed_at',
-              'status',
               'mood',
               'stiffness',
               'slowness',
@@ -350,8 +345,6 @@ describe('/api', () => {
         return request
           .post('/api/quiz/1')
           .send({
-            status: 1,
-            mood: 1,
             stiffness: 1,
             slowness: 1,
             tremor: 1
@@ -369,7 +362,6 @@ describe('/api', () => {
         return request
           .patch('/api/quiz/1')
           .send({
-            status: 0,
             mood: 0,
             stiffness: 0,
             slowness: 0,
@@ -384,8 +376,7 @@ describe('/api', () => {
         return request
           .patch('/api/quiz/1')
           .send({
-            status: 'not a number!',
-            mood: 0,
+            mood: 'not a number!',
             stiffness: 0,
             slowness: 0,
             tremor: 5
