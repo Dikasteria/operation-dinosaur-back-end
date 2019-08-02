@@ -29,3 +29,7 @@ exports.deleteCode = code => {
     .where({ code })
     .delete();
 };
+
+exports.getAllCodes = () => {
+  return connection.select('*').from('codes');
+};
