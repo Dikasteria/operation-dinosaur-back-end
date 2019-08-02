@@ -1,17 +1,16 @@
-const { formatCode } = require('../../utils/formatData');
 const { connection } = require('../connection');
 
 exports.getCode = () => {
-  const codeStr = Math.floor(Math.random() * 9999).toString();
-  const formattedCode = formatCode(codeStr);
+  //ensures 4 digit code does not begin with a 0 to avoid issues with Alexa
+  const codeStr = Math.floor(Math.random() * 8999 + 1000).toString();
 
   return connection
     .select('*')
     .from('codes')
     .then(codesObjs => {
       const codes = codesObjs.map(codeObj => codeObj.code);
-      if (!codes.includes(formattedCode)) {
-        return formattedCode;
+      if (!codes.includes(codeStr)) {
+        return codeStr;
       } else {
         return getCode();
       }
