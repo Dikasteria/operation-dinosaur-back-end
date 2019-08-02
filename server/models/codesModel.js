@@ -17,16 +17,16 @@ exports.getCode = () => {
     });
 };
 
-exports.addCode = ({ user_id }, code) => {
+exports.addCode = (user_id, code) => {
   return connection
     .insert({ user_id, code })
     .into('codes')
     .returning('*');
 };
 
-exports.deleteCode = code => {
+exports.deleteCode = code_id => {
   return connection('codes')
-    .where({ code })
+    .where({ id: code_id })
     .delete();
 };
 

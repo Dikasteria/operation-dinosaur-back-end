@@ -1,12 +1,13 @@
 const { getCode, addCode, deleteCode, getAllCodes } = require('../models/');
 
 exports.fetchCode = (req, res, next) => {
+  const { user_id } = req.params;
   getCode().then(code => {
-    addCode({ ...req.params }, code).then(([{ code }]) => {
+    addCode(user_id, code).then(([code]) => {
       res.status(200).send({ code });
       setTimeout(() => {
-        deleteCode(code);
-      }, 900000);
+        deleteCode(code.id);
+      }, 3000);
     });
   });
 };
