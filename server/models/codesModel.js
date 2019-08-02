@@ -17,9 +17,9 @@ exports.getCode = () => {
     });
 };
 
-exports.addCode = code => {
+exports.addCode = ({ user_id }, code) => {
   return connection
-    .insert({ code })
+    .insert({ user_id, code })
     .into('codes')
     .returning('*');
 };
