@@ -72,14 +72,17 @@
   "POST /api/devices/:user_id": {
     "description": "adds a new device to a user",
     "exampleRequest": {
-      "push_key": "84jjdjd"
+      "push_key": null,
+      "amazon_id": "test",
+      "code": "9999"
     },
     "exampleResponse": {
       "devices": [
         {
           "id": 5,
           "user_id": 1,
-          "push_key": "84jjdjd"
+          "push_key": null,
+          "amazon_id": "test"
         }
       ]
     }

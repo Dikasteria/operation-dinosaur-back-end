@@ -7,8 +7,9 @@ exports.getDevices = ({ user_id }) => {
     .where({ user_id });
 };
 
-exports.postDevice = ({ user_id, push_key }) => {
-  const device = { user_id, push_key };
+exports.postDevice = ({ user_id, push_key, amazon_id }) => {
+  const device = { user_id, push_key, amazon_id };
+
   return connection
     .insert(device)
     .into('devices')

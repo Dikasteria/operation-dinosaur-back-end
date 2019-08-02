@@ -33,3 +33,17 @@ exports.deleteCode = code_id => {
 exports.getAllCodes = () => {
   return connection.select('*').from('codes');
 };
+
+exports.checkCode = code => {
+  return connection
+    .select('*')
+    .from('codes')
+    .then(codesObjs => {
+      const codes = codesObjs.map(codeObj => codeObj.code);
+      if (codes.includes(code)) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+};
