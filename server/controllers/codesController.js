@@ -1,4 +1,4 @@
-const { getCode, addCode, deleteCode } = require('../models/');
+const { getCode, addCode, deleteCode, getAllCodes } = require('../models/');
 
 exports.fetchCode = (req, res, next) => {
   getCode().then(code => {
@@ -8,5 +8,11 @@ exports.fetchCode = (req, res, next) => {
         deleteCode(code);
       }, 900000);
     });
+  });
+};
+
+exports.fetchAllCodes = (req, res, next) => {
+  getAllCodes().then(codes => {
+    res.status(200).send({ codes });
   });
 };
