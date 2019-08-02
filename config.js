@@ -1,3 +1,6 @@
-const login = { username: "dikasteria", password: "password" };
+const login = {
+    username: "alex",
+    password: "Pass2.0"
+};
 
 module.exports = { login };
