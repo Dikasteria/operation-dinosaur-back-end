@@ -5,7 +5,7 @@ const { send405Error } = require('../../errors');
 
 codesRouter.route('/').all(send405Error);
 codesRouter
-  .route('/new')
+  .route('/:user_id')
   .get(fetchCode)
   .all(send405Error);
 

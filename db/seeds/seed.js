@@ -8,10 +8,10 @@ exports.seed = function(knex, test) {
       return knex.migrate.latest();
     })
     .then(() => {
-      return knex('codes').insert(codes);
+      return knex('users').insert(users);
     })
     .then(() => {
-      return knex('users').insert(users);
+      return knex('codes').insert(codes);
     })
     .then(() => {
       return knex('devices').insert(devices);

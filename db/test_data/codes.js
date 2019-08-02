@@ -1,1 +1,1 @@
-module.exports = [{ code: '9999' }];
+module.exports = [{ user_id: 1, code: '9999' }];
