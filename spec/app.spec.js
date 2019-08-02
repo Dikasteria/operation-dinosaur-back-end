@@ -52,8 +52,13 @@ describe('/api', () => {
           .get('/api/devices/1')
           .expect(200)
           .then(({ body: { devices } }) => {
-            expect(devices.length).to.equal(2);
-            expect(devices[0]).to.contain.keys('id', 'user_id', 'push_key');
+            expect(devices.length).to.equal(3);
+            expect(devices[0]).to.contain.keys(
+              'id',
+              'user_id',
+              'push_key',
+              'amazon_id'
+            );
           });
       });
       it('status:404 for an invalid user id', () => {
@@ -74,24 +79,6 @@ describe('/api', () => {
           .expect(201)
           .then(({ body: { device } }) => {
             expect(device).to.include.keys('id', 'user_id', 'push_key');
-          });
-      });
-      it('status:400 when missing required columns', () => {
-        return request
-          .post('/api/devices/1')
-          .send({})
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal('bad request');
-          });
-      });
-      it('status:400 when adding non-existent columns', () => {
-        return request
-          .post('/api/devices/1')
-          .send({ test: 'not-a-column' })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal('bad request');
           });
       });
     });
