@@ -18,7 +18,7 @@ exports.fetchDevices = (req, res, next) => {
 exports.addDevice = (req, res, next) => {
   const { push_key, amazon_id, code } = req.body;
 
-  if (amazon_id.length) {
+  if (amazon_id) {
     checkCode(code).then(result => {
       if (!result) {
         res.status(400).send({ msg: 'code does not exist' });
