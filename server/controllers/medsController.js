@@ -1,21 +1,28 @@
-const { getMeds, postMed, patchMed, deleteMed, patchMedTakenApp } = require('../models/');
+const { getMeds, getMedsAlexa, postMed, patchMed, deleteMed, patchMedTakenApp } = require('../models/');
 
 exports.fetchMedsApp = (req, res, next) => {
-  console.log(req.params);
   getMeds({ ...req.params })
     .then(meds => {
-      if (meds.length < 1) {
-        res.status(404).send({ msg: 'No medications found' });
-      } else {
-        res.status(200).send({ meds });
-      }
+      res.status(200).send({ meds });
+      // if (meds.length < 1) {
+      //   res.status(200).send({ msg: 'No medications found' });
+      // } else {
+      //   res.status(200).send({ meds });
+      // }
     })
     .catch(next);
 };
 
 exports.fetchMedsAlexa = (req, res, next) => {
-
-}
+    if(req.headers && req.headers.amazon_id){
+      const amazon_id = req.headers.amazon_id;
+      getMedsAlexa({ amazon_id })
+        .then(meds => {
+          res.status(200).send({ meds });
+        })
+        .catch(next);
+    };
+};
 
 exports.addMed = (req, res, next) => {
   postMed({ ...req.params, ...req.body })

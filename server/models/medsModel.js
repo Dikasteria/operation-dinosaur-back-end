@@ -7,6 +7,32 @@ exports.getMeds = ({ user_id }) => {
     .where({ user_id });
 };
 
+exports.getMedsAlexa = ({ amazon_id }) => {
+  return connection
+    .select('*')
+    .from('devices')
+    .where({ amazon_id })
+    .returning('*')
+    .then(([user]) => {
+      const { user_id } = user;
+      return connection
+        .select('*')
+        .from('meds')
+        .where({ user_id })
+        .returning('*')
+        .then(meds => {
+          const now = new Date(Date.now());
+          const plus24 = new Date(Date.now() + 86400000)
+          const filteredMeds =  meds.filter(med => {
+            if(med.due < now || med.due > plus24) return false;
+            else return true;
+          });
+          console.log(filteredMeds);
+          return(filteredMeds);
+        });
+    });
+};
+
 exports.postMed = ({ user_id, type, due }) => {
   const med = { user_id, type, due };
   return connection

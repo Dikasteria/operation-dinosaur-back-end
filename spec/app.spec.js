@@ -372,20 +372,48 @@ describe('/api', () => {
   })
   describe('meds/alexa', () => {
     describe('GET', () => {
-      it.only('returns all medications for a user due in the next 24h', () => {
-        const header = { amazon_id: 'a1234'}; //for user_id 1
+      it('returns all medications for a user due in the next 24h', () => {
+        const time = new Date(Date.now() + 600000);
+        const med = { type: 'testmedtype', due: time }
         return request
-          .get('/api/meds/alexa')
-          .set(header)
-          .send()
-          .expect()
-          .then(({ body : { meds }}) => {
-            expect(meds.length).to.equal(1);
-            expect(meds[0]).to.contain.keys(
-              'id', 'user_id', 'type', 'due', 'taken', 'taken_at', 'status'
-            );
-            expect(meds[0].user_id).to.equal(1);
-          });
+          .post('/api/meds/app/1')
+          .send(med)
+          .then( x => {
+
+            const header = { amazon_id: 'a1234'}; //for user_id 1
+            return request
+              .get('/api/meds/alexa')
+              .set(header)
+              .send()
+              .expect(200)
+              .then(({ body : { meds }}) => {
+                expect(meds.length).to.equal(1);
+                expect(meds[0]).to.contain.keys(
+                  'id', 'user_id', 'type', 'due', 'taken', 'taken_at', 'status'
+                );
+                expect(meds[0].user_id).to.equal(1);
+                expect(meds[0].type).to.equal('testmedtype')
+              });
+          })
+      });
+      it.only('does not return medications due in the past', () => {
+        const time = new Date(Date.now() - 600000);
+        const med = { type: 'testmedtype', due: time }
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then( x => {
+
+            const header = { amazon_id: 'a1234'}; //for user_id 1
+            return request
+              .get('/api/meds/alexa')
+              .set(header)
+              .send()
+              .expect(200)
+              .then(({ body : { meds }}) => {
+                expect(meds.length).to.equal(0);
+              });
+          })
       });
     });
   })
