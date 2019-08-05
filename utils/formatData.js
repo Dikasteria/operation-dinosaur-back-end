@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 const formatDate = (list, key) => {
   return list.map(({ ...args }) => {
     const newObject = { ...args };
@@ -9,9 +11,13 @@ const formatDate = (list, key) => {
   });
 };
 
-const testData = '019-07-29T15:00:00.000Z'
 const add24Hours = (time) => {
-  return false
+  if (!time || time.length === 0){
+    return false
+  }
+  const momentTime = moment(time).add(1, 'days').utc().format()
+  // splice in milliseconds
+  return momentTime.replace(/:00Z/, ':00.000Z')
 }
 
 module.exports = {

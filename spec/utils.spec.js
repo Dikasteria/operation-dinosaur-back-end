@@ -93,10 +93,19 @@ const utilsTests = describe('Utils functions', () => {
     });
   });
   
-  describe.only('add24Hours', () => {
-    it('returns false if format is invalid', () => {
-      
+  describe('add24Hours', () => {
+    it('returns false if given an empty string', () => {
+      expect(add24Hours('')).to.be.false
     });
+    it('adds a day to the time, without month overflow', () => {
+      expect(add24Hours('2019-07-29T15:00:00.000Z')).to.equal('2019-07-30T15:00:00.000Z')
+    })
+    it('adds a day to the time, with month overflow', () => {
+      expect(add24Hours('2019-07-31T15:00:00.000Z')).to.equal('2019-08-01T15:00:00.000Z')
+    })
+    it('adds a day to the time, with year overflow', () => {
+      expect(add24Hours('2019-12-31T15:00:00.000Z')).to.equal('2020-01-01T15:00:00.000Z')
+    })
   });  
 });
 module.exports = utilsTests
