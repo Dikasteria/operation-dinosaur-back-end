@@ -5,9 +5,13 @@ const chai = require('chai');
 const { expect } = require('chai');
 const chaiSorted = require('chai-sorted');
 const { connection } = require('../server/connection');
+const utilTests = require('./utils.spec')
+const dbUtilTests = require('./db_call_utils.spec')
 
 chai.use(chaiSorted);
 
+describe('db call utils', dbUtilTests)
+describe('data manipulation utils', utilTests)
 describe('/api', () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
