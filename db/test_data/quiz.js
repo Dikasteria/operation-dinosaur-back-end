@@ -12,7 +12,7 @@ module.exports = [
   },
   {
     user_id: 1,
-    completed_at: 1565038800,
+    completed_at: 1565038800000,
     mood: 5,
     stiffness: 1,
     slowness: 3,
@@ -20,7 +20,7 @@ module.exports = [
   },
   {
     user_id: 1,
-    completed_at: 1565125200,
+    completed_at: 1565125200000,
     mood: 2,
     stiffness: 3,
     slowness: 1,
@@ -28,7 +28,7 @@ module.exports = [
   },
   {
     user_id: 1,
-    completed_at: 1565211600,
+    completed_at: 1565211600000,
     mood: 2,
     stiffness: 4,
     slowness: 1,
@@ -36,7 +36,7 @@ module.exports = [
   },
   {
     user_id: 1,
-    completed_at: 1565298000,
+    completed_at: 1565298000000,
     mood: 2,
     stiffness: 3,
     slowness: 4,
@@ -44,7 +44,7 @@ module.exports = [
   },
   {
     user_id: 1,
-    completed_at: 1565384400,
+    completed_at: 1565384400000,
     mood: 5,
     stiffness: 3,
     slowness: 2,
@@ -52,7 +52,7 @@ module.exports = [
   },
   {
     user_id: 1,
-    completed_at: 1565470800,
+    completed_at: 1565470800000,
     mood: 3,
     stiffness: 3,
     slowness: 1,
@@ -60,7 +60,7 @@ module.exports = [
   },
   {
     user_id: 1,
-    completed_at: 1565557200,
+    completed_at: 1565557200000,
     mood: 5,
     stiffness: 3,
     slowness: 4,
