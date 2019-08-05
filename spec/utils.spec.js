@@ -92,7 +92,6 @@ const utilsTests = describe('Utils functions', () => {
       expect(actual).to.eql(expected);
     });
   });
-  
   describe('add24Hours', () => {
     it('returns false if given an empty string', () => {
       expect(add24Hours('')).to.be.false

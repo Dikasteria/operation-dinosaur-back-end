@@ -16,7 +16,7 @@ const add24Hours = (time) => {
     return false
   }
   const momentTime = moment(time).add(1, 'days').utc().format()
-  // splice in milliseconds
+  // add in milliseconds
   return momentTime.replace(/:00Z/, ':00.000Z')
 }
 
