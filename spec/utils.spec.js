@@ -1,5 +1,6 @@
 const { expect } = require("chai");
-const { formatDate, makeRefObj, formatComments } = require("../db/utils/utils");
+const { formatDate, add24Hours } = require("../utils");
+
 
 describe("formatDate", () => {
   it("returns a new array", () => {

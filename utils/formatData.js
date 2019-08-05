@@ -8,3 +8,13 @@ exports.formatDate = (list, key) => {
     return newObject;
   });
 };
+
+const testData = '019-07-29T15:00:00.000Z'
+exports.add24Hours = (time) => {
+
+}
+
+module.exports = {
+  formatDate,
+  add24Hours
+}
