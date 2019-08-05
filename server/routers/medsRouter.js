@@ -11,6 +11,12 @@ const {
 } = require('../controllers/');
 const { send405Error } = require('../../errors');
 
+
+medsRouter
+  .route('/app/taken/1')
+  .post(takenMedsApp)
+  .all(send405Error);
+
 medsRouter
   .route('/app/:user_id')
   .get(fetchMedsApp)
@@ -20,11 +26,6 @@ medsRouter
   .route('/app/:med_id')
   .patch(updateMed)
   .delete(removeMed)
-  .all(send405Error);
-
-medsRouter
-  .route('/app/taken')
-  .post(takenMedsApp)
   .all(send405Error);
 
 medsRouter

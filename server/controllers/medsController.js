@@ -42,7 +42,10 @@ exports.removeMed = (req, res, next) => {
 };
 
 exports.takenMedsApp = (req, res, next) => {
-
+  patchMedTakenApp({ ...req.body })
+    .then(() => {
+      
+    })
 };
 
 exports.takenMedsAlexa = (req, res, next) => {

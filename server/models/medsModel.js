@@ -34,3 +34,13 @@ exports.deleteMed = ({ med_id }) => {
     .where({ id: med_id })
     .delete();
 };
+
+exports.patchMedTakenApp = ({ user_id }) => {
+  //check db for untaken meds belonging to user
+  //find one not more than 90 mins overdue; not more than 3 hours early
+
+  
+  // return connection('meds')
+  //   .where({ user_id })
+
+}

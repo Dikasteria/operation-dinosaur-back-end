@@ -205,7 +205,7 @@ describe('/api', () => {
     describe('POST', () => {
       it('adds a new medication', () => {
         const time = new Date(1564412400000);
-        const med = { user_id: 1, type: 'codeine', due: time };
+        const med = { type: 'codeine', due: time };
         return request
           .post('/api/meds/app/1')
           .send(med)
@@ -286,6 +286,31 @@ describe('/api', () => {
       });
     });
   });
+  describe('/meds/app/taken/:user_id', () => {
+    describe('POST', () => {
+      it.only('marks medication as taken', () => {
+        const dueAt = new Date(Date.now() + 180000)
+        const med = { type: 'testMed', due: dueAt };
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then(med => {
+            return request
+              .post('/api/meds/app/taken/1')
+              .expect(201)
+              .then(({ body: { med }}) => {
+                expect(med).to.include.keys('id', 'user_id', 'type', 'due', 'taken', 'taken_at')
+                const { user_id, type, taken, taken_at } = med;
+                expect(user_id).to.equal(1);
+                expect(type).to.equal('testMed');
+                expect(due).to.equal(dueAt);
+                expect(taken).to.equal(true);
+                console.log(taken_at);
+              });
+          });
+      });
+    });
+  })
   describe('/events/:user_id', () => {
     describe('GET', () => {
       it('gets all events for a user', () => {
