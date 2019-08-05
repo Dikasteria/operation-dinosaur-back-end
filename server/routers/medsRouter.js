@@ -13,7 +13,7 @@ const { send405Error } = require('../../errors');
 
 
 medsRouter
-  .route('/app/taken/1')
+  .route('/app/taken/:user_id')
   .post(takenMedsApp)
   .all(send405Error);
 

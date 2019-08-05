@@ -288,7 +288,7 @@ describe('/api', () => {
   });
   describe('/meds/app/taken/:user_id', () => {
     describe('POST', () => {
-      it.only('marks medication as taken', () => {
+      it('marks next due medication as taken', () => {
         const dueAt = new Date(Date.now() + 180000)
         const med = { type: 'testMed', due: dueAt };
         return request
@@ -298,15 +298,93 @@ describe('/api', () => {
             return request
               .post('/api/meds/app/taken/1')
               .expect(201)
-              .then(({ body: { med }}) => {
-                expect(med).to.include.keys('id', 'user_id', 'type', 'due', 'taken', 'taken_at')
-                const { user_id, type, taken, taken_at } = med;
+              .then(({ body }) => {
+                const { confirmation, patchedMed, message } = body;
+                expect(confirmation).to.equal(true);
+                expect(message).to.equal('your medication testMed was successfuly recorded as taken');
+                expect(patchedMed).to.include.keys('id', 'user_id', 'type', 'due', 'taken', 'taken_at')
+                const { user_id, due, type, taken } = patchedMed;
                 expect(user_id).to.equal(1);
                 expect(type).to.equal('testMed');
                 expect(due).to.equal(dueAt);
                 expect(taken).to.equal(true);
-                console.log(taken_at);
               });
+          });
+      });
+      it('marks slightly overdue medication as taken', () => {
+        const dueAt = new Date(Date.now() - 4500000)
+        const med = { type: 'testMed', due: dueAt };
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then(med => {
+            return request
+              .post('/api/meds/app/taken/1')
+              .expect(201)
+              .then(({ body }) => {
+                const { confirmation, patchedMed, message } = body;
+                expect(confirmation).to.equal(true);
+                expect(message).to.equal('your medication testMed was successfuly recorded as taken');
+                expect(patchedMed).to.include.keys('id', 'user_id', 'type', 'due', 'taken', 'taken_at')
+                const { user_id, due, type, taken } = patchedMed;
+                expect(user_id).to.equal(1);
+                expect(type).to.equal('testMed');
+                expect(taken).to.equal(true);
+                expect(due).to.equal(dueAt);
+              });
+          });
+      });
+      it('will not mark medication as taken too early', () => {
+        const dueAt = new Date(Date.now() + 9000000)
+        const med = { type: 'testMed', due: dueAt };
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then(med => {
+            return request
+              .post('/api/meds/app/taken/1')
+              .expect(400)
+              .then(({ body }) => {
+                const { confirmation, patchedMed, message } = body;
+                expect(confirmation).to.equal(false);
+                expect(message).to.equal('your medication could not be recorded as taken');
+              });
+          });
+      });
+      it('will not mark medication as taken too late', () => {
+        const dueAt = new Date(Date.now() - 9000000)
+        const med = { type: 'testMed', due: dueAt };
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then(med => {
+            return request
+              .post('/api/meds/app/taken/1')
+              .expect(400)
+              .then(({ body }) => {
+                const { confirmation, patchedMed, message } = body;
+                expect(confirmation).to.equal(false);
+                expect(message).to.equal('your medication could not be recorded as taken');
+              });
+          });
+      });
+    });
+  })
+  describe('meds/alexa', () => {
+    describe('GET', () => {
+      it.only('returns all medications for a user due in the next 24h', () => {
+        const header = { amazon_id: 'a1234'}; //for user_id 1
+        return request
+          .get('/api/meds/alexa')
+          .set(header)
+          .send()
+          .expect()
+          .then(({ body : { meds }}) => {
+            expect(meds.length).to.equal(1);
+            expect(meds[0]).to.contain.keys(
+              'id', 'user_id', 'type', 'due', 'taken', 'taken_at', 'status'
+            );
+            expect(meds[0].user_id).to.equal(1);
           });
       });
     });

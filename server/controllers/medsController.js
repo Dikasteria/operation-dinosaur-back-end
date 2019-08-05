@@ -1,4 +1,4 @@
-const { getMeds, postMed, patchMed, deleteMed } = require('../models/');
+const { getMeds, postMed, patchMed, deleteMed, patchMedTakenApp } = require('../models/');
 
 exports.fetchMedsApp = (req, res, next) => {
   console.log(req.params);
@@ -42,10 +42,12 @@ exports.removeMed = (req, res, next) => {
 };
 
 exports.takenMedsApp = (req, res, next) => {
-  patchMedTakenApp({ ...req.body })
-    .then(() => {
-      
-    })
+  patchMedTakenApp({ ...req.params })
+    .then(result => {
+      console.log(result, 'after update');
+      if(result.status) res.status(201).send({ ...result });
+      else res.status(400).send({ ... result });
+    });
 };
 
 exports.takenMedsAlexa = (req, res, next) => {
