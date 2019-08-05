@@ -96,9 +96,12 @@ if(testPairDevice) {
   });
 }
 
+const testOther = true;
+if(testOther){
+
 describe('/api', () => {
   beforeEach(() => connection.seed.run());
-  // after(() => connection.destroy());
+  after(() => connection.destroy());
   describe('/users', () => {
     describe('POST', () => {
       it('adds a new user', () => {
@@ -171,11 +174,11 @@ describe('/api', () => {
       });
     });
   });
-  describe('/meds/:user_id', () => {
+  describe('/meds/app/:user_id', () => {
     describe('GET', () => {
       it('gets all medications for a user', () => {
         return request
-          .get('/api/meds/1')
+          .get('/api/meds/app/1')
           .expect(200)
           .then(({ body: { meds } }) => {
             expect(meds.length).to.equal(1);
@@ -192,7 +195,7 @@ describe('/api', () => {
       });
       it('status:404 for an invalid user id', () => {
         return request
-          .get('/api/meds/4')
+          .get('/api/meds/app/4')
           .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).to.equal('No medications found');
@@ -204,7 +207,7 @@ describe('/api', () => {
         const time = new Date(1564412400000);
         const med = { user_id: 1, type: 'codeine', due: time };
         return request
-          .post('/api/meds/1')
+          .post('/api/meds/app/1')
           .send(med)
           .expect(201)
           .then(({ body: { med } }) => {
@@ -221,7 +224,7 @@ describe('/api', () => {
         const time = new Date(1564412400000);
         const med = { user_id: 314, type: 'codeine', due: time };
         return request
-          .post('/api/meds/1')
+          .post('/api/meds/app/1')
           .send(med)
           .expect(400)
           .then(({ body: { msg } }) => {
@@ -231,7 +234,7 @@ describe('/api', () => {
       it('status:400 when missing required columns', () => {
         const med = { type: 'codeine' };
         return request
-          .post('/api/meds/1')
+          .post('/api/meds/app/1')
           .send(med)
           .expect(400)
           .then(({ body: { msg } }) => {
@@ -247,7 +250,7 @@ describe('/api', () => {
           due: time
         };
         return request
-          .post('/api/meds/1')
+          .post('/api/meds/app/1')
           .send(med)
           .expect(400)
           .then(({ body: { msg } }) => {
@@ -256,11 +259,11 @@ describe('/api', () => {
       });
     });
   });
-  describe('/meds/:med_id', () => {
+  describe('/meds/app/:med_id', () => {
     describe('PATCH', () => {
       it('updates taken to true', () => {
         return request
-          .patch('/api/meds/1')
+          .patch('/api/meds/app/1')
           .send({ taken: true })
           .expect(200)
           .then(({ body: { patchedMed } }) => {
@@ -269,7 +272,7 @@ describe('/api', () => {
       });
       it('status:400 when patching a value of incorrect type', () => {
         return request
-          .patch('/api/meds/1')
+          .patch('/api/meds/app/1')
           .send({ taken: 314 })
           .expect(400)
           .then(({ body: { msg } }) => {
@@ -279,7 +282,7 @@ describe('/api', () => {
     });
     describe('DELETE', () => {
       it('Deletes a medication', () => {
-        return request.delete('/api/meds/1').expect(204);
+        return request.delete('/api/meds/app/1').expect(204);
       });
     });
   });
@@ -452,4 +455,4 @@ describe('/api', () => {
   });
 });
 
-
+};  //end main conditional testing block

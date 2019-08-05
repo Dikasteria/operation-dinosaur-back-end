@@ -1,6 +1,7 @@
 const { getMeds, postMed, patchMed, deleteMed } = require('../models/');
 
-exports.fetchMeds = (req, res, next) => {
+exports.fetchMedsApp = (req, res, next) => {
+  console.log(req.params);
   getMeds({ ...req.params })
     .then(meds => {
       if (meds.length < 1) {
@@ -11,6 +12,10 @@ exports.fetchMeds = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.fetchMedsAlexa = (req, res, next) => {
+
+}
 
 exports.addMed = (req, res, next) => {
   postMed({ ...req.params, ...req.body })
@@ -35,3 +40,11 @@ exports.removeMed = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.takenMedsApp = (req, res, next) => {
+
+};
+
+exports.takenMedsAlexa = (req, res, next) => {
+
+}
