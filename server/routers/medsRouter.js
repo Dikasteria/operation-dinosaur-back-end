@@ -4,14 +4,25 @@ const { fetchMeds, addMed, updateMed, removeMed } = require('../controllers/');
 const { send405Error } = require('../../errors');
 
 medsRouter
-  .route('/:user_id')
+  .route('app/:user_id')
   .get(fetchMeds)
   .post(addMed);
 
 medsRouter
-  .route('/:med_id')
+  .route('app/:med_id')
   .patch(updateMed)
   .delete(removeMed)
+  .all(send405Error);
+
+medsRouter
+  .route('app/taken')
+  .post(takenMed)
+  .all(send405Error);
+
+medsRouter
+  .route('alexa')
+  .get()
+  .post()
   .all(send405Error);
 
 module.exports = { medsRouter };
