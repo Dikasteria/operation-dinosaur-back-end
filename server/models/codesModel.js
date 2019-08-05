@@ -24,10 +24,10 @@ exports.addCode = (user_id, code) => {
     .returning('*');
 };
 
-exports.deleteCode = code_id => {
+exports.deleteCode = (id) => {
   return connection('codes')
-    .where({ id: code_id })
-    .delete();
+    .where({ id })
+    .del();
 };
 
 exports.getAllCodes = () => {
