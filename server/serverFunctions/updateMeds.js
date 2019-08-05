@@ -1,9 +1,6 @@
 const { connection } = require('../connection');
 
-assignMedTaken = () => {
-    console.log('medication marked as taken')
-    //update status to 10
-};
+
 
 assignPromptBefore = () => {
     console.log('medication is due soon')
@@ -29,10 +26,20 @@ assignPromptAfterSecond = () => {
     //update status to 4
 };
 
+assignMedTaken = () => {
+    console.log('medication marked as taken')
+    //update status to 10
+};
+
 assignWriteOff = () => {
     console.log('write off over-due medication as untaken')
     //update status to 9
 };
+
+assignDiscontinued = () => {
+    console.log('medication discontuned')
+    //update statuts to 8
+}
 
 
 module.exports = {
@@ -41,5 +48,6 @@ module.exports = {
     assignPromptAt,
     assignPromptAfterFirst,
     assignPromptAfterSecond,
-    assignWriteOff
+    assignWriteOff,
+    assignDiscontinued
 }
