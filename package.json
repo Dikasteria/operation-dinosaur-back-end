@@ -6,6 +6,7 @@
   "dependencies": {
     "chai": "^4.2.0",
     "cors": "^2.8.5",
+    "expo-server-sdk": "^3.3.0",
     "express": "^4.17.1",
     "knex": "^0.19.1",
     "nodemon": "^1.19.1",
