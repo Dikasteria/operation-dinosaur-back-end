@@ -1,14 +1,14 @@
 const { expect } = require("chai");
 const { fetchUserIdFromAmazonId } = require('../utils/db_call_utils')
 
-const dbTests = describe.only('dbUtilTests', () => {
+const dbTests = describe('dbUtilTests', () => {
     it('returns false on an empty amazonId', () => {
         return fetchUserIdFromAmazonId()
             .then(results => {
                 expect(results).to.be.false
             })
     });
-    it('retieves an id', () => {
+    it('retrieves an id', () => {
         return fetchUserIdFromAmazonId('a1234')
             .then(results => {
                 expect(results).to.equal(1)
