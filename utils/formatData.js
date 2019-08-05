@@ -1,4 +1,4 @@
-exports.formatDate = (list, key) => {
+const formatDate = (list, key) => {
   return list.map(({ ...args }) => {
     const newObject = { ...args };
     if (newObject[key]) {
@@ -10,8 +10,8 @@ exports.formatDate = (list, key) => {
 };
 
 const testData = '019-07-29T15:00:00.000Z'
-exports.add24Hours = (time) => {
-
+const add24Hours = (time) => {
+  return false
 }
 
 module.exports = {

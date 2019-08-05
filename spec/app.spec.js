@@ -5,9 +5,10 @@ const chai = require('chai');
 const { expect } = require('chai');
 const chaiSorted = require('chai-sorted');
 const { connection } = require('../server/connection');
+const utilTests = require('./utils.spec')
 
 chai.use(chaiSorted);
-
+describe('utils', utilTests)
 describe('/api', () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
