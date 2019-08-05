@@ -3,4 +3,3 @@ config.js
 knexfile.js
 output.txt
 db-test.sql
-/config
