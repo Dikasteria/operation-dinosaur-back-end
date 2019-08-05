@@ -1,4 +1,4 @@
-const { getDevices, postDevice } = require('../models');
+const { getDevices, postDevice, checkCode } = require('../models');
 
 exports.fetchDevices = (req, res, next) => {
   getDevices({ ...req.params })
@@ -16,7 +16,17 @@ exports.fetchDevices = (req, res, next) => {
 };
 
 exports.addDevice = (req, res, next) => {
-  postDevice({ ...req.params, ...req.body })
+  const { push_key, amazon_id, code } = req.body;
+
+  if (amazon_id) {
+    checkCode(code).then(result => {
+      if (!result) {
+        res.status(400).send({ msg: 'code does not exist' });
+      }
+    });
+  }
+
+  postDevice({ ...req.params, push_key, amazon_id })
     .then(device => {
       res.status(201).send({ device });
     })
