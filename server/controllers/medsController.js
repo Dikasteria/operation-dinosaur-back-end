@@ -11,8 +11,8 @@ exports.fetchMedsApp = (req, res, next) => {
 exports.fetchMedsAlexa = (req, res, next) => {
   console.log(req.headers, 'header')
   console.log(req.body, 'body');
-    if(req.headers && req.headers.amazonId){
-      const amazon_id = req.headers.amazonId;
+    if(req.headers && req.headers.amazonid){
+      const amazon_id = req.headers.amazonid;
       getMedsAlexa({ amazon_id })
         .then(meds => {
           res.status(200).send({ meds });
@@ -55,8 +55,8 @@ exports.takenMedsApp = (req, res, next) => {
 };
 
 exports.takenMedsAlexa = (req, res, next) => {
-  if(req.headers && req.headers.amazonId){
-    const amazon_id = req.headers.amazonId;
+  if(req.headers && req.headers.amazonid){
+    const amazon_id = req.headers.amazonid;
     patchMedTakenAlexa({ amazon_id })
       .then(result => {
         if(result.confirmation) res.status(201).send({ ...result });
