@@ -7,89 +7,71 @@ const chaiSorted = require('chai-sorted');
 const { connection } = require('../server/connection');
 const utilTests = require('./utils.spec')
 const dbUtilTests = require('./db_call_utils.spec')
+const moment = require('moment')
 
 chai.use(chaiSorted);
 
 
-describe('/codes/requestnew', () => {
-  beforeEach(() => connection.seed.run());
-  describe('db call utils', dbUtilTests)
-  describe('data manipulation utils', utilTests)
-  describe('GET', () => {
-    it('generates an authentication code', () => {
-      return request
-        .get('/api/codes/requestnew/1')
-        .expect(200)
-        .then(({ body : { code }}) => {
-          expect(code).to.include.keys('id', 'user_id', 'code')
-          expect(code.code.length).to.equal(4);
-        })
+//the testRequestNew and testPairDevice functions invoke
+//backend utils which involve setTimeout
+//this causes them to behave incorrectly when the whole test
+//suite runs at once - test them individually
 
-        // add a delayed re-test
-        // .then(code => {
-        //   const { codeExpiry } = require('../server/controllers/codesController');
-        //   const timeout = codeExpiry + 2000;
-
-        //   function delay(ms) {
-        //     return new Promise(resolve => setTimeout(resolve, ms));
-        //   };
-        //   async function delayFunc(func) {
-        //     await delay(timeout);
-        //     return 'complete';
-        //   };
-
-        //   delayFunc();
-
-        // }).then( () => {
-        //   return request
-        //   .get('/api/codes')
-        //   .expect(200)
-        //   .then(({ body: { codes }}) => {
-        //     expect(codes.length).to.equal(0)
-        //   });
-        // });
-    });
-  });
-});
-
-describe('/codes/pairdevice', () => {
-  beforeEach(() => connection.seed.run());
-  describe('POST', () => {
-    it('pairs an amazon id to a user account', () => {
-      
-      // const { codeExpiry } = require('../server/controllers/codesController');
-      // const timeout = codeExpiry + 1000;
-      // setTimeout(() => {
-      //   connection.destroy();
-      // }, timeout);
-
-      return request
-        .get('/api/codes/requestnew/1')
-        .expect(200)
-        .then(({ body : { code }}) => {
-          const inputCode = code.code;
-          return inputCode;
-        })
-        .then(inputCode => {
-          const header = { amazon_id: '<<<<<<<<<<<<<  test CODE'};
-          const body = { inputCode }
-          return request
-          .post('/api/codes/alexa')
-          .set(header)
-          .send(body)
-          .expect(201)
-          .then(({ body : { confirmation }}) => {
-            expect(confirmation).to.equal(`device paired successfuly`);
+const testRequestNew = false;
+if(testRequestNew) {
+  describe('/codes/requestnew', () => {
+    beforeEach(() => connection.seed.run());
+    describe('db call utils', dbUtilTests)
+    describe('data manipulation utils', utilTests)
+    describe('GET', () => {
+      it('generates an authentication code', () => {
+        return request
+          .get('/api/codes/requestnew/1')
+          .expect(200)
+          .then(({ body : { code }}) => {
+            expect(code).to.include.keys('id', 'user_id', 'code')
+            expect(code.code.length).to.equal(4);
           });
-        });
-
+      });
     });
   });
-});
+}
+const testPairDevice = true;
+if(testPairDevice) {
+  describe('/codes/pairdevice', () => {
+    beforeEach(() => connection.seed.run());
+    describe('POST', () => {
+      it('pairs an amazon id to a user account', () => {
+        return request
+          .get('/api/codes/requestnew/1')
+          .expect(200)
+          .then(({ body : { code }}) => {
+            const inputCode = code.code;
+            return inputCode;
+          })
+          .then(inputCode => {
+            const header = { amazon_id: '<<<<<<<<<<<<<  test CODE'};
+            const body = { inputCode }
+            return request
+            .post('/api/codes/alexa')
+            .set(header)
+            .send(body)
+            .expect(201)
+            .then(({ body : { confirmation }}) => {
+              expect(confirmation).to.equal(`device paired successfuly`);
+            });
+          });
+      });
+    });
+  });
+}
+
+const testOther = true;
+if(testOther){
 
 describe('/api', () => {
   beforeEach(() => connection.seed.run());
-  // after(() => connection.destroy());
+  after(() => connection.destroy());
   describe('/users', () => {
     describe('POST', () => {
       it('adds a new user', () => {
@@ -162,11 +144,11 @@ describe('/api', () => {
       });
     });
   });
-  describe('/meds/:user_id', () => {
+  describe('/meds/app/:user_id', () => {
     describe('GET', () => {
       it('gets all medications for a user', () => {
         return request
-          .get('/api/meds/1')
+          .get('/api/meds/app/1')
           .expect(200)
           .then(({ body: { meds } }) => {
             expect(meds.length).to.equal(1);
@@ -183,7 +165,7 @@ describe('/api', () => {
       });
       it('status:404 for an invalid user id', () => {
         return request
-          .get('/api/meds/4')
+          .get('/api/meds/app/4')
           .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).to.equal('No medications found');
@@ -193,9 +175,9 @@ describe('/api', () => {
     describe('POST', () => {
       it('adds a new medication', () => {
         const time = new Date(1564412400000);
-        const med = { user_id: 1, type: 'codeine', due: time };
+        const med = { type: 'codeine', due: time };
         return request
-          .post('/api/meds/1')
+          .post('/api/meds/app/1')
           .send(med)
           .expect(201)
           .then(({ body: { med } }) => {
@@ -212,7 +194,7 @@ describe('/api', () => {
         const time = new Date(1564412400000);
         const med = { user_id: 314, type: 'codeine', due: time };
         return request
-          .post('/api/meds/1')
+          .post('/api/meds/app/1')
           .send(med)
           .expect(400)
           .then(({ body: { msg } }) => {
@@ -222,7 +204,7 @@ describe('/api', () => {
       it('status:400 when missing required columns', () => {
         const med = { type: 'codeine' };
         return request
-          .post('/api/meds/1')
+          .post('/api/meds/app/1')
           .send(med)
           .expect(400)
           .then(({ body: { msg } }) => {
@@ -230,7 +212,7 @@ describe('/api', () => {
           });
       });
       it('status:400 when adding non-existent columns', () => {
-        const time = new Date(1564412400000);
+        const time = new Date(1564412400000)
         const med = {
           test: 'not-a-column',
           user_id: 314,
@@ -238,7 +220,7 @@ describe('/api', () => {
           due: time
         };
         return request
-          .post('/api/meds/1')
+          .post('/api/meds/app/1')
           .send(med)
           .expect(400)
           .then(({ body: { msg } }) => {
@@ -247,11 +229,11 @@ describe('/api', () => {
       });
     });
   });
-  describe('/meds/:med_id', () => {
+  describe('/meds/app/:med_id', () => {
     describe('PATCH', () => {
       it('updates taken to true', () => {
         return request
-          .patch('/api/meds/1')
+          .patch('/api/meds/app/1')
           .send({ taken: true })
           .expect(200)
           .then(({ body: { patchedMed } }) => {
@@ -260,7 +242,7 @@ describe('/api', () => {
       });
       it('status:400 when patching a value of incorrect type', () => {
         return request
-          .patch('/api/meds/1')
+          .patch('/api/meds/app/1')
           .send({ taken: 314 })
           .expect(400)
           .then(({ body: { msg } }) => {
@@ -270,10 +252,160 @@ describe('/api', () => {
     });
     describe('DELETE', () => {
       it('Deletes a medication', () => {
-        return request.delete('/api/meds/1').expect(204);
+        return request.delete('/api/meds/app/1').expect(204);
       });
     });
   });
+  describe('/meds/app/taken/:user_id', () => {
+    describe('POST', () => {
+      it('marks next due medication as taken', () => {
+        const dueAt = moment(new Date(Date.now() + 180000)).utc().format().replace(/:[0-9]{2}Z/, ':00.000Z')
+        const med = { type: 'testMed', due: dueAt };
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then(med => {
+            return request
+              .post('/api/meds/app/taken/1')
+              .expect(201)
+              .then(({ body }) => {
+                const { confirmation, patchedMed, message } = body;
+                expect(confirmation).to.equal(true);
+                expect(message).to.equal('your medication testMed was successfully recorded as taken');
+                expect(patchedMed).to.include.keys('id', 'user_id', 'type', 'due', 'taken', 'taken_at')
+                const { user_id, due, type, taken } = patchedMed;
+                expect(user_id).to.equal(1);
+                expect(type).to.equal('testMed');
+                expect(due).to.equal(dueAt);
+                expect(taken).to.equal(true);
+              });
+          });
+      });
+      it('marks slightly overdue medication as taken', () => {
+        const dueAt = moment(new Date(Date.now() - 45000)).utc().format().replace(/:[0-9]{2}Z/, ':00.000Z')
+        const med = { type: 'testMed', due: dueAt };
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then(med => {
+            return request
+              .post('/api/meds/app/taken/1')
+              .expect(201)
+              .then(({ body }) => {
+                const { confirmation, patchedMed, message } = body;
+                expect(confirmation).to.equal(true);
+                expect(message).to.equal('your medication testMed was successfully recorded as taken');
+                expect(patchedMed).to.include.keys('id', 'user_id', 'type', 'due', 'taken', 'taken_at')
+                const { user_id, due, type, taken } = patchedMed;
+                expect(user_id).to.equal(1);
+                expect(type).to.equal('testMed');
+                expect(taken).to.equal(true);
+                expect(due).to.equal(dueAt);
+              });
+          });
+      });
+      it('will not mark medication as taken too early', () => {
+        const dueAt = new Date(Date.now() + 9000000)
+        const med = { type: 'testMed', due: dueAt };
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then(med => {
+            return request
+              .post('/api/meds/app/taken/1')
+              .expect(400)
+              .then(({ body }) => {
+                const { confirmation, patchedMed, message } = body;
+                expect(confirmation).to.equal(false);
+                expect(message).to.equal('your medication could not be recorded as taken');
+              });
+          });
+      });
+      it('will not mark medication as taken too late', () => {
+        const dueAt = new Date(Date.now() - 9000000)
+        const med = { type: 'testMed', due: dueAt };
+        return request  
+          .post('/api/meds/app/1')
+          .send(med)
+          .then(med => {
+            return request
+              .post('/api/meds/app/taken/1')
+              .expect(400)
+              .then(({ body }) => {
+                const { confirmation, patchedMed, message } = body;
+                expect(confirmation).to.equal(false);
+                expect(message).to.equal('your medication could not be recorded as taken');
+              });
+          });
+      });
+    });
+  })
+  describe('meds/alexa', () => {
+    describe('GET', () => {
+      it('returns all medications for a user due in the next 24h', () => {
+        const time = new Date(Date.now() + 600000);
+        const med = { type: 'testmedtype', due: time }
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then( x => {
+
+            const header = { amazon_id: 'a1234'}; //for user_id 1
+            return request
+              .get('/api/meds/alexa')
+              .set(header)
+              .send()
+              .expect(200)
+              .then(({ body : { meds }}) => {
+                expect(meds.length).to.equal(1);
+                expect(meds[0]).to.contain.keys(
+                  'id', 'user_id', 'type', 'due', 'taken', 'taken_at', 'status'
+                );
+                expect(meds[0].user_id).to.equal(1);
+                expect(meds[0].type).to.equal('testmedtype')
+              });
+          })
+      });
+      it('does not return medications due in the past', () => {
+        const time = new Date(Date.now() - 600000);
+        const med = { type: 'testmedtype', due: time }
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then( x => {
+
+            const header = { amazon_id: 'a1234'}; //for user_id 1
+            return request
+              .get('/api/meds/alexa')
+              .set(header)
+              .send()
+              .expect(200)
+              .then(({ body : { meds }}) => {
+                expect(meds.length).to.equal(0);
+              });
+          })
+      });
+      it('does not return medications due more than 24h later', () => {
+        const time = new Date(Date.now() + 172800000);
+        const med = { type: 'testmedtype', due: time }
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then( x => {
+
+            const header = { amazon_id: 'a1234'}; //for user_id 1
+            return request
+              .get('/api/meds/alexa')
+              .set(header)
+              .send()
+              .expect(200)
+              .then(({ body : { meds }}) => {
+                expect(meds.length).to.equal(0);
+              });
+          })
+      });
+    });
+  })
   describe('/events/:user_id', () => {
     describe('GET', () => {
       it('gets all events for a user', () => {
@@ -443,4 +575,4 @@ describe('/api', () => {
   });
 });
 
-
+};  //end main conditional testing block

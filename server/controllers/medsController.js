@@ -1,15 +1,22 @@
-const { getMeds, postMed, patchMed, deleteMed } = require('../models/');
+const { getMeds, getMedsAlexa, postMed, patchMed, deleteMed, patchMedTakenApp, patchMedTakenAlexa } = require('../models/');
 
-exports.fetchMeds = (req, res, next) => {
+exports.fetchMedsApp = (req, res, next) => {
   getMeds({ ...req.params })
     .then(meds => {
-      if (meds.length < 1) {
-        res.status(404).send({ msg: 'No medications found' });
-      } else {
-        res.status(200).send({ meds });
-      }
+      res.status(200).send({ meds });
     })
     .catch(next);
+};
+
+exports.fetchMedsAlexa = (req, res, next) => {
+    if(req.headers && req.headers.amazon_id){
+      const amazon_id = req.headers.amazon_id;
+      getMedsAlexa({ amazon_id })
+        .then(meds => {
+          res.status(200).send({ meds });
+        })
+        .catch(next);
+    };
 };
 
 exports.addMed = (req, res, next) => {
@@ -34,4 +41,25 @@ exports.removeMed = (req, res, next) => {
       res.status(204).send({});
     })
     .catch(next);
+};
+
+exports.takenMedsApp = (req, res, next) => {
+  patchMedTakenApp({ ...req.params })
+    .then(result => {
+      if(result.confirmation) res.status(201).send({ ...result });
+      else res.status(400).send({ ... result });
+    })
+    .catch(next);
+};
+
+exports.takenMedsAlexa = (req, res, next) => {
+  if(req.headers && req.headers.amazon_id){
+    const amazon_id = req.headers.amazon_id;
+    patchMedTakenAlexa({ amazon_id })
+      .then(result => {
+        if(result.confirmation) res.status(201).send({ ...result });
+        else res.status(400).send({ ... result });
+      })
+      .catch(next);
+  };
 };
