@@ -8,12 +8,14 @@ exports.getMeds = ({ user_id }) => {
 };
 
 exports.getMedsAlexa = ({ amazon_id }) => {
+  //convert amazon_id to user_id
   return connection
     .select('*')
     .from('devices')
     .where({ amazon_id })
     .returning('*')
     .then(([user]) => {
+      
       const { user_id } = user;
       return connection
         .select('*')
@@ -98,4 +100,53 @@ exports.patchMedTakenApp = ({ user_id }) => {
       };
     });
 
+};
+
+exports.patchMedTakenAlexa = ({ amazon_id }) => {
+
+  //convert amazon_id to user_id
+  return connection
+  .select('*')
+  .from('devices')
+  .where({ amazon_id })
+  .returning('*')
+  .then(([user]) => {
+
+    const { user_id } = user;
+    const maxPast = new Date(Date.now() - 5400000) //90 minutes
+    const maxFuture  = new Date(Date.now() + 7200000) //120 minutes
+    return connection
+      .select('*')
+      .from('meds')
+      .where({ user_id })
+      .orderBy('due', 'asc')
+      .then(meds => {
+        const filteredMeds = meds.filter(med => {
+          if (med.due < maxPast || med.due > maxFuture ) return false;
+          else return true;
+        })
+  
+        if(filteredMeds.length > 0) {
+          const id = filteredMeds[0].id;
+          const taken = true;
+          const taken_at = new Date(Date.now());
+          const status = 10;
+          return connection('meds')
+          .where({ id })
+          .update({ taken, taken_at, status })
+          .returning('*')
+          .then(([ patchedMed ]) => {
+            const confirmation = true;
+            const message = `your medication ${patchedMed.type} was successfully recorded as taken`
+            return { patchedMed, confirmation, message };
+          });
+        } else {
+          // no medication is due suitably soon - return failure
+          const confirmation = false;
+          const message = `your medication could not be recorded as taken`
+          return { confirmation, message };
+        };
+      });
+
+  });
 };

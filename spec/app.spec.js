@@ -287,7 +287,7 @@ describe('/api', () => {
     });
   });
   describe('/meds/app/taken/:user_id', () => {
-    describe('POST', () => {
+    describe.only('POST', () => {
       it('marks next due medication as taken', () => {
         const dueAt = new Date(Date.now() + 180000)
         const med = { type: 'testMed', due: dueAt };
@@ -301,7 +301,7 @@ describe('/api', () => {
               .then(({ body }) => {
                 const { confirmation, patchedMed, message } = body;
                 expect(confirmation).to.equal(true);
-                expect(message).to.equal('your medication testMed was successfuly recorded as taken');
+                expect(message).to.equal('your medication testMed was successfully recorded as taken');
                 expect(patchedMed).to.include.keys('id', 'user_id', 'type', 'due', 'taken', 'taken_at')
                 const { user_id, due, type, taken } = patchedMed;
                 expect(user_id).to.equal(1);
@@ -324,7 +324,7 @@ describe('/api', () => {
               .then(({ body }) => {
                 const { confirmation, patchedMed, message } = body;
                 expect(confirmation).to.equal(true);
-                expect(message).to.equal('your medication testMed was successfuly recorded as taken');
+                expect(message).to.equal('your medication testMed was successfully recorded as taken');
                 expect(patchedMed).to.include.keys('id', 'user_id', 'type', 'due', 'taken', 'taken_at')
                 const { user_id, due, type, taken } = patchedMed;
                 expect(user_id).to.equal(1);
@@ -396,8 +396,27 @@ describe('/api', () => {
               });
           })
       });
-      it.only('does not return medications due in the past', () => {
+      it('does not return medications due in the past', () => {
         const time = new Date(Date.now() - 600000);
+        const med = { type: 'testmedtype', due: time }
+        return request
+          .post('/api/meds/app/1')
+          .send(med)
+          .then( x => {
+
+            const header = { amazon_id: 'a1234'}; //for user_id 1
+            return request
+              .get('/api/meds/alexa')
+              .set(header)
+              .send()
+              .expect(200)
+              .then(({ body : { meds }}) => {
+                expect(meds.length).to.equal(0);
+              });
+          })
+      });
+      it.only('does not return medications due more than 24h later', () => {
+        const time = new Date(Date.now() + 172800000);
         const med = { type: 'testmedtype', due: time }
         return request
           .post('/api/meds/app/1')
