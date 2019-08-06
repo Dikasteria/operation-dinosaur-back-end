@@ -1,7 +1,24 @@
-const { getMeds, getMedsAlexa, postMed, patchMed, deleteMed, patchMedTakenApp, patchMedTakenAlexa } = require('../models/');
+const {
+  getAllMeds,
+  getDailyMeds,
+  getMedsAlexa,
+  postMed,
+  patchMed,
+  deleteMed,
+  patchMedTakenApp,
+  patchMedTakenAlexa
+} = require('../models/');
 
-exports.fetchMedsApp = (req, res, next) => {
-  getMeds({ ...req.params })
+exports.fetchAllMedsApp = (req, res, next) => {
+  getAllMeds({ ...req.params })
+    .then(meds => {
+      res.status(200).send({ meds });
+    })
+    .catch(next);
+};
+
+exports.fetchDailyMedsApp = (req, res, next) => {
+  getDailyMeds({ ...req.params })
     .then(meds => {
       res.status(200).send({ meds });
     })

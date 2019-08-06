@@ -106,7 +106,7 @@ describe('/api', () => {
       });
     });
   });
-  describe('/devices/:user_id', () => {
+  describe('/devices/app/:user_id', () => {
     describe('GET', () => {
       it('gets all devices for a user', () => {
         return request
@@ -144,115 +144,17 @@ describe('/api', () => {
       });
     });
   });
-  describe('/meds/app/:user_id', () => {
+  describe('/devices/alexa', () => {
     describe('GET', () => {
-      it('gets all medications for a user', () => {
+      it('returns true if device is paired', () => {
+        const headers = { amazonid: 'a1234' }
         return request
-          .get('/api/meds/app/1')
+          .get('/api/devices/alexa')
+          .set(headers)
           .expect(200)
-          .then(({ body: { meds } }) => {
-            expect(meds.length).to.equal(1);
-            expect(meds[0]).to.contain.keys(
-              'id',
-              'user_id',
-              'type',
-              'due',
-              'taken',
-              'taken_at',
-              'status'
-            );
-          });
-      });
-      it('status:404 for an invalid user id', () => {
-        return request
-          .get('/api/meds/app/4')
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal('No medications found');
-          });
-      });
-    });
-    describe('POST', () => {
-      it('adds a new medication', () => {
-        const time = new Date(1564412400000);
-        const med = { type: 'codeine', due: time };
-        return request
-          .post('/api/meds/app/1')
-          .send(med)
-          .expect(201)
-          .then(({ body: { med } }) => {
-            expect(med).to.include.keys(
-              'id',
-              'user_id',
-              'type',
-              'due',
-              'taken'
-            );
-          });
-      });
-      it('status:400 when posting an invalid foreign key', () => {
-        const time = new Date(1564412400000);
-        const med = { user_id: 314, type: 'codeine', due: time };
-        return request
-          .post('/api/meds/app/1')
-          .send(med)
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal('bad request');
-          });
-      });
-      it('status:400 when missing required columns', () => {
-        const med = { type: 'codeine' };
-        return request
-          .post('/api/meds/app/1')
-          .send(med)
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal('bad request');
-          });
-      });
-      it('status:400 when adding non-existent columns', () => {
-        const time = new Date(1564412400000)
-        const med = {
-          test: 'not-a-column',
-          user_id: 314,
-          type: 'codeine',
-          due: time
-        };
-        return request
-          .post('/api/meds/app/1')
-          .send(med)
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal('bad request');
-          });
-      });
-    });
-  });
-  describe('/meds/app/:med_id', () => {
-    describe('PATCH', () => {
-      it('updates taken to true', () => {
-        return request
-          .patch('/api/meds/app/1')
-          .send({ taken: true })
-          .expect(200)
-          .then(({ body: { patchedMed } }) => {
-            expect(patchedMed.taken).to.eql(true);
-          });
-      });
-      it('status:400 when patching a value of incorrect type', () => {
-        return request
-          .patch('/api/meds/app/1')
-          .send({ taken: 314 })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal('bad request');
-          });
-      });
-    });
-    describe('DELETE', () => {
-      it('Deletes a medication', () => {
-        return request.delete('/api/meds/app/1').expect(204);
+          .then(({ body : {confirmation}}) => {
+            expect(confirmation).to.be.true
+          })
       });
     });
   });
@@ -262,7 +164,7 @@ describe('/api', () => {
         const dueAt = moment(new Date(Date.now() + 180000)).utc().format().replace(/:[0-9]{2}Z/, ':00.000Z')
         const med = { type: 'testMed', due: dueAt };
         return request
-          .post('/api/meds/app/1')
+          .post('/api/meds/app/all/1')
           .send(med)
           .then(med => {
             return request
@@ -285,7 +187,7 @@ describe('/api', () => {
         const dueAt = moment(new Date(Date.now() - 45000)).utc().format().replace(/:[0-9]{2}Z/, ':00.000Z')
         const med = { type: 'testMed', due: dueAt };
         return request
-          .post('/api/meds/app/1')
+          .post('/api/meds/app/all/1')
           .send(med)
           .then(med => {
             return request
@@ -308,7 +210,7 @@ describe('/api', () => {
         const dueAt = new Date(Date.now() + 9000000)
         const med = { type: 'testMed', due: dueAt };
         return request
-          .post('/api/meds/app/1')
+          .post('/api/meds/app/all/1')
           .send(med)
           .then(med => {
             return request
@@ -325,7 +227,7 @@ describe('/api', () => {
         const dueAt = new Date(Date.now() - 9000000)
         const med = { type: 'testMed', due: dueAt };
         return request  
-          .post('/api/meds/app/1')
+          .post('/api/meds/app/all/1')
           .send(med)
           .then(med => {
             return request
@@ -339,14 +241,155 @@ describe('/api', () => {
           });
       });
     });
-  })
+  });
+  describe('/meds/app/daily/:user_id', () => {
+    describe('GET', () => {
+      it('returns all medications for a user due in the next 24h', () => {
+        const time = new Date(Date.now() + 600000);
+        const med = { type: 'testMed', due: time }
+        return request
+          .post('/api/meds/app/all/1')
+          .send(med)
+          .then( x => {
+            return request
+            .get('/api/meds/app/daily/1')
+            .expect(200)
+            .then(({ body: { meds } }) => {
+              expect(meds.length).to.equal(1);
+              expect(meds[0]).to.contain.keys(
+                'id',
+                'user_id',
+                'type',
+                'due',
+                'taken',
+                'taken_at',
+                'status'
+              );
+              expect(meds[0].type).to.equal('testMed')
+            });
+          });
+      });
+    });
+  });
+  describe('/meds/app/all/:user_id', () => {
+    describe('GET', () => {
+      it('gets all medications for a user', () => {
+        return request
+          .get('/api/meds/app/all/1')
+          .expect(200)
+          .then(({ body: { meds } }) => {
+            expect(meds.length).to.equal(1);
+            expect(meds[0]).to.contain.keys(
+              'id',
+              'user_id',
+              'type',
+              'due',
+              'taken',
+              'taken_at',
+              'status'
+            );
+          });
+      });
+      it('status:404 for an invalid user id', () => {
+        return request
+          .get('/api/meds/app/all/4')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('No such user');
+          });
+      });
+    });
+    describe('POST', () => {
+      it('adds a new medication', () => {
+        const time = new Date(1564412400000);
+        const med = { type: 'codeine', due: time };
+        return request
+          .post('/api/meds/app/all/1')
+          .send(med)
+          .expect(201)
+          .then(({ body: { med } }) => {
+            expect(med).to.include.keys(
+              'id',
+              'user_id',
+              'type',
+              'due',
+              'taken'
+            );
+          });
+      });
+      it('status:400 when posting an invalid foreign key', () => {
+        const time = new Date(1564412400000);
+        const med = { user_id: 314, type: 'codeine', due: time };
+        return request
+          .post('/api/meds/app/all/1')
+          .send(med)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+      it('status:400 when missing required columns', () => {
+        const med = { type: 'codeine' };
+        return request
+          .post('/api/meds/app/all/1')
+          .send(med)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+      it('status:400 when adding non-existent columns', () => {
+        const time = new Date(1564412400000)
+        const med = {
+          test: 'not-a-column',
+          user_id: 314,
+          type: 'codeine',
+          due: time
+        };
+        return request
+          .post('/api/meds/app/all/1')
+          .send(med)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+    });
+  });
+  describe('/meds/app/all/:med_id', () => {
+    describe('PATCH', () => {
+      it('updates taken to true', () => {
+        return request
+          .patch('/api/meds/app/all/1')
+          .send({ taken: true })
+          .expect(200)
+          .then(({ body: { patchedMed } }) => {
+            expect(patchedMed.taken).to.eql(true);
+          });
+      });
+      it('status:400 when patching a value of incorrect type', () => {
+        return request
+          .patch('/api/meds/app/all/1')
+          .send({ taken: 314 })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+    });
+    describe('DELETE', () => {
+      it('Deletes a medication', () => {
+        return request.delete('/api/meds/app/all/1').expect(204);
+      });
+    });
+  });
   describe('meds/alexa', () => {
     describe('GET', () => {
       it('returns all medications for a user due in the next 24h', () => {
         const time = new Date(Date.now() + 600000);
         const med = { type: 'testmedtype', due: time }
         return request
-          .post('/api/meds/app/1')
+          .post('/api/meds/app/all/1')
           .send(med)
           .then( x => {
 
@@ -364,7 +407,7 @@ describe('/api', () => {
                 expect(meds[0].user_id).to.equal(1);
                 expect(meds[0].type).to.equal('testmedtype')
               });
-          })
+          });
       });
       it('does not return medications due in the past', () => {
         const time = new Date(Date.now() - 600000);
@@ -536,22 +579,6 @@ describe('/api', () => {
       });
     });
   });
-  describe('/quiz/alexa/', () => {
-    describe('POST', () => {
-      it('posts a new questionnaire response', () => {
-        const headers = { amazonid: 'a1234' } 
-        const body = { mood: 1, stiffness: 1, tremor: 1, slowness: 1 }
-        return request
-          .post('/api/quiz/alexa')
-          .set(headers)
-          .send(body)
-          .expect(201)
-          .then(({ body: { confirmation } }) => {
-            expect(confirmation).to.be.true
-          });
-      });
-    });
-  });
   describe('/quiz/app/:quiz_id', () => {
     describe('PATCH', () => {
       it('updates questionnaire result', () => {
@@ -589,17 +616,19 @@ describe('/api', () => {
       });
     });
   });
-  describe('/devices/alexa', () => {
-    describe('GET', () => {
-      it('returns true if device is paired', () => {
-        const headers = { amazonid: 'a1234' }
+  describe('/quiz/alexa/', () => {
+    describe('POST', () => {
+      it('posts a new questionnaire response', () => {
+        const headers = { amazonid: 'a1234' } 
+        const body = { mood: 1, stiffness: 1, tremor: 1, slowness: 1 }
         return request
-          .get('/api/devices/alexa')
+          .post('/api/quiz/alexa')
           .set(headers)
-          .expect(200)
-          .then(({ body : {confirmation}}) => {
+          .send(body)
+          .expect(201)
+          .then(({ body: { confirmation } }) => {
             expect(confirmation).to.be.true
-          })
+          });
       });
     });
   });

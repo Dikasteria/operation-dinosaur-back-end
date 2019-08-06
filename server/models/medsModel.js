@@ -1,6 +1,6 @@
 const { connection } = require('../connection');
 
-exports.getMeds = ({ user_id }) => {
+exports.getAllMeds = ({ user_id }) => {
   return connection
     .select('*')
     .from('users')
@@ -14,9 +14,37 @@ exports.getMeds = ({ user_id }) => {
           .where({ user_id })
       }
         else if (users.length === 0){
-          return Promise.reject({status: 404, msg: 'No medications found'});
+          return Promise.reject({status: 404, msg: 'No such user'});
       };
     });
+};
+
+exports.getDailyMeds = ({ user_id }) => {
+  return connection
+  .select('*')
+  .from('users')
+  .where({ id: user_id })
+  .returning('*')
+  .then(users => {
+    if(users.length === 1){
+      return connection
+        .select('*')
+        .from('meds')
+        .where({ user_id })
+        .then(meds => {
+          const now = new Date(Date.now());
+          const plus24 = new Date(Date.now() + 86400000)
+          const filteredMeds =  meds.filter(med => {
+            if(med.due < now || med.due > plus24) return false;
+            else return true;
+          });
+          return(filteredMeds);
+        });
+    }
+      else if (users.length === 0){
+        return Promise.reject({status: 404, msg: 'No such user'});
+    };
+  });
 };
 
 exports.getMedsAlexa = ({ amazon_id }) => {
