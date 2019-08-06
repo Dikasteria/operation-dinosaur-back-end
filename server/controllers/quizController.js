@@ -48,3 +48,4 @@ exports.addQuizAlexa = (req, res, next) => {
   }
   return Promise.reject({status: 400, msg: 'bad request'})
 }
+

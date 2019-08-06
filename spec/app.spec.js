@@ -110,7 +110,7 @@ describe('/api', () => {
     describe('GET', () => {
       it('gets all devices for a user', () => {
         return request
-          .get('/api/devices/1')
+          .get('/api/devices/app/1')
           .expect(200)
           .then(({ body: { devices } }) => {
             expect(devices.length).to.equal(3);
@@ -124,7 +124,7 @@ describe('/api', () => {
       });
       it('status:404 for an invalid user id', () => {
         return request
-          .get('/api/devices/4')
+          .get('/api/devices/app/4')
           .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).to.equal('No devices found');
@@ -135,7 +135,7 @@ describe('/api', () => {
       it('adds a new device', () => {
         const device = { push_key: '84jjdjd' };
         return request
-          .post('/api/devices/1')
+          .post('/api/devices/app/1')
           .send(device)
           .expect(201)
           .then(({ body: { device } }) => {
@@ -536,7 +536,7 @@ describe('/api', () => {
       });
     });
   });
-  describe.only('/quiz/alexa/', () => {
+  describe('/quiz/alexa/', () => {
     describe('POST', () => {
       it('posts a new questionnaire response', () => {
         const headers = { amazonid: 'a1234' } 
@@ -589,6 +589,19 @@ describe('/api', () => {
       });
     });
   });
+  describe('/devices/alexa', () => {
+    describe('GET', () => {
+      it('returns true if device is paired', () => {
+        const headers = { amazonid: 'a1234' }
+        return request
+          .get('/api/devices/alexa')
+          .set(headers)
+          .expect(200)
+          .then(({ body : {confirmation}}) => {
+            expect(confirmation).to.be.true
+          })
+      });
+    });
+  });
 });
-
 };  //end main conditional testing block

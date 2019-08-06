@@ -18,3 +18,16 @@ exports.postDevice = ({ user_id, push_key, amazon_id }) => {
       return addedDevice;
     });
 };
+
+exports.checkPair = (amazon_id) => {
+  return connection('devices')
+    .select('*')
+    .where({amazon_id})
+    .then(( devices )=> {
+      if (!devices.length) {
+        return { confirmation: false}
+      } else {
+        return { confirmation: true}
+      }
+    })
+}

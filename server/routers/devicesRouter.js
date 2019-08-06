@@ -1,6 +1,6 @@
 const express = require('express');
 const devicesRouter = express.Router();
-const { fetchDevices, addDevice } = require('../controllers/');
+const { fetchDevices, addDevice, fetchPair } = require('../controllers/');
 const { send405Error } = require('../../errors');
 
 devicesRouter
@@ -10,5 +10,8 @@ devicesRouter
   .all(send405Error);
 
 devicesRouter
+  .route('/alexa/')
+  .get(fetchPair)
+  .all(send405Error)
 
 module.exports = { devicesRouter };
