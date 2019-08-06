@@ -4,11 +4,6 @@ exports.fetchMedsApp = (req, res, next) => {
   getMeds({ ...req.params })
     .then(meds => {
       res.status(200).send({ meds });
-      // if (meds.length < 1) {
-      //   res.status(200).send({ msg: 'No medications found' });
-      // } else {
-      //   res.status(200).send({ meds });
-      // }
     })
     .catch(next);
 };

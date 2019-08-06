@@ -3,8 +3,20 @@ const { connection } = require('../connection');
 exports.getMeds = ({ user_id }) => {
   return connection
     .select('*')
-    .from('meds')
-    .where({ user_id });
+    .from('users')
+    .where({ id: user_id })
+    .returning('*')
+    .then(users => {
+      if(users.length === 1){
+        return connection
+          .select('*')
+          .from('meds')
+          .where({ user_id })
+      }
+        else if (users.length === 0){
+          return Promise.reject({status: 404, msg: 'No medications found'});
+      };
+    });
 };
 
 exports.getMedsAlexa = ({ amazon_id }) => {
@@ -29,7 +41,6 @@ exports.getMedsAlexa = ({ amazon_id }) => {
             if(med.due < now || med.due > plus24) return false;
             else return true;
           });
-          console.log(filteredMeds);
           return(filteredMeds);
         });
     });

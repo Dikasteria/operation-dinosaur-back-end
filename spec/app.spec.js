@@ -31,31 +31,7 @@ if(testRequestNew) {
           .then(({ body : { code }}) => {
             expect(code).to.include.keys('id', 'user_id', 'code')
             expect(code.code.length).to.equal(4);
-          })
-  
-          // add a delayed re-test
-          // .then(code => {
-          //   const { codeExpiry } = require('../server/controllers/codesController');
-          //   const timeout = codeExpiry + 2000;
-  
-          //   function delay(ms) {
-          //     return new Promise(resolve => setTimeout(resolve, ms));
-          //   };
-          //   async function delayFunc(func) {
-          //     await delay(timeout);
-          //     return 'complete';
-          //   };
-  
-          //   delayFunc();
-  
-          // }).then( () => {
-          //   return request
-          //   .get('/api/codes')
-          //   .expect(200)
-          //   .then(({ body: { codes }}) => {
-          //     expect(codes.length).to.equal(0)
-          //   });
-          // });
+          });
       });
     });
   });
@@ -66,13 +42,6 @@ if(testPairDevice) {
     beforeEach(() => connection.seed.run());
     describe('POST', () => {
       it('pairs an amazon id to a user account', () => {
-        
-        // const { codeExpiry } = require('../server/controllers/codesController');
-        // const timeout = codeExpiry + 1000;
-        // setTimeout(() => {
-        //   connection.destroy();
-        // }, timeout);
-  
         return request
           .get('/api/codes/requestnew/1')
           .expect(200)
@@ -92,7 +61,6 @@ if(testPairDevice) {
               expect(confirmation).to.equal(`device paired successfuly`);
             });
           });
-  
       });
     });
   });
