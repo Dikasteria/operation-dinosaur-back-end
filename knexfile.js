@@ -13,7 +13,7 @@ const baseConfig = {
 };
 
 const customConfig = {
-  development: {
+  developmenpst: {
     connection: {
       database: 'op_dino_dev',
       username: login.username,

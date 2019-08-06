@@ -36,7 +36,7 @@ if(testRequestNew) {
     });
   });
 }
-const testPairDevice = true;
+const testPairDevice = false;
 if(testPairDevice) {
   describe('/codes/pairdevice', () => {
     beforeEach(() => connection.seed.run());
@@ -350,7 +350,7 @@ describe('/api', () => {
           .send(med)
           .then( x => {
 
-            const header = { amazon_id: 'a1234'}; //for user_id 1
+            const header = { amazonid: 'a1234'}; //for user_id 1
             return request
               .get('/api/meds/alexa')
               .set(header)
@@ -374,7 +374,7 @@ describe('/api', () => {
           .send(med)
           .then( x => {
 
-            const header = { amazon_id: 'a1234'}; //for user_id 1
+            const header = { amazonid: 'a1234'}; //for user_id 1
             return request
               .get('/api/meds/alexa')
               .set(header)
@@ -393,7 +393,7 @@ describe('/api', () => {
           .send(med)
           .then( x => {
 
-            const header = { amazon_id: 'a1234'}; //for user_id 1
+            const header = { amazonid: 'a1234'}; //for user_id 1
             return request
               .get('/api/meds/alexa')
               .set(header)
@@ -483,11 +483,11 @@ describe('/api', () => {
       });
     });
   });
-  describe('/quiz/:user_id', () => {
+  describe('/quiz/app/:user_id', () => {
     describe('GET', () => {
       it('gets all questionnaire responses', () => {
         return request
-          .get('/api/quiz/1')
+          .get('/api/quiz/app/1')
           .expect(200)
           .then(({ body: { quizzes } }) => {
             expect(quizzes[0]).to.contain.keys(
@@ -503,7 +503,7 @@ describe('/api', () => {
       });
       it('status:404 for an invalid user id', () => {
         return request
-          .get('/api/quiz/4')
+          .get('/api/quiz/app/4')
           .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).to.equal('No quiz found');
@@ -514,7 +514,7 @@ describe('/api', () => {
       it('posts a new questionnaire response', () => {
         const due = new Date(1564412400000);
         return request
-          .post('/api/quiz/1')
+          .post('/api/quiz/app/1')
           .send({
             mood: 1,
             stiffness: 1,
@@ -536,11 +536,27 @@ describe('/api', () => {
       });
     });
   });
-  describe('/quiz/:quiz_id', () => {
-    describe('PATCH', () => {
-      it('updates questionnnaire result', () => {
+  describe.only('/quiz/alexa/', () => {
+    describe('POST', () => {
+      it('posts a new questionnaire response', () => {
+        const headers = { amazonid: 'a1234' } 
+        const body = { mood: 1, stiffness: 1, tremor: 1, slowness: 1 }
         return request
-          .patch('/api/quiz/1')
+          .post('/api/quiz/alexa')
+          .set(headers)
+          .send(body)
+          .expect(201)
+          .then(({ body: { confirmation } }) => {
+            expect(confirmation).to.be.true
+          });
+      });
+    });
+  });
+  describe('/quiz/app/:quiz_id', () => {
+    describe('PATCH', () => {
+      it('updates questionnaire result', () => {
+        return request
+          .patch('/api/quiz/app/1')
           .send({
             mood: 0,
             stiffness: 0,
@@ -554,7 +570,7 @@ describe('/api', () => {
       });
       it('status:400 when patching a value of incorrect type', () => {
         return request
-          .patch('/api/quiz/1')
+          .patch('/api/quiz/app/1')
           .send({
             mood: 'not a number!',
             stiffness: 0,
@@ -569,7 +585,7 @@ describe('/api', () => {
     });
     describe('DELETE', () => {
       it('deletes a questionnaire result', () => {
-        return request.delete('/api/quiz/1').expect(204);
+        return request.delete('/api/quiz/app/1').expect(204);
       });
     });
   });

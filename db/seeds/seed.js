@@ -11,9 +11,6 @@ exports.seed = function(knex, test) {
       return knex('users').insert(users);
     })
     .then(() => {
-      return knex('codes').insert(codes);
-    })
-    .then(() => {
       return knex('devices').insert(devices);
     })
     .then(() => {

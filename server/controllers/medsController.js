@@ -9,8 +9,6 @@ exports.fetchMedsApp = (req, res, next) => {
 };
 
 exports.fetchMedsAlexa = (req, res, next) => {
-  console.log(req.headers, 'header')
-  console.log(req.body, 'body');
     if(req.headers && req.headers.amazonid){
       const amazon_id = req.headers.amazonid;
       getMedsAlexa({ amazon_id })

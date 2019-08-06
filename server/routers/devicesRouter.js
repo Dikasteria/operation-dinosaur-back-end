@@ -4,9 +4,11 @@ const { fetchDevices, addDevice } = require('../controllers/');
 const { send405Error } = require('../../errors');
 
 devicesRouter
-  .route('/:user_id')
+  .route('/app/:user_id')
   .get(fetchDevices)
   .post(addDevice)
   .all(send405Error);
+
+devicesRouter
 
 module.exports = { devicesRouter };
