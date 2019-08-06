@@ -7,6 +7,7 @@ const chaiSorted = require('chai-sorted');
 const { connection } = require('../server/connection');
 const utilTests = require('./utils.spec')
 const dbUtilTests = require('./db_call_utils.spec')
+const moment = require('moment')
 
 chai.use(chaiSorted);
 
@@ -15,6 +16,7 @@ chai.use(chaiSorted);
 //backend utils which involve setTimeout
 //this causes them to behave incorrectly when the whole test
 //suite runs at once - test them individually
+
 const testRequestNew = false;
 if(testRequestNew) {
   describe('/codes/requestnew', () => {
@@ -58,7 +60,7 @@ if(testRequestNew) {
     });
   });
 }
-const testPairDevice = false;
+const testPairDevice = true;
 if(testPairDevice) {
   describe('/codes/pairdevice', () => {
     beforeEach(() => connection.seed.run());
@@ -242,7 +244,7 @@ describe('/api', () => {
           });
       });
       it('status:400 when adding non-existent columns', () => {
-        const time = new Date(1564412400000);
+        const time = new Date(1564412400000)
         const med = {
           test: 'not-a-column',
           user_id: 314,
@@ -287,9 +289,9 @@ describe('/api', () => {
     });
   });
   describe('/meds/app/taken/:user_id', () => {
-    describe.only('POST', () => {
+    describe('POST', () => {
       it('marks next due medication as taken', () => {
-        const dueAt = new Date(Date.now() + 180000)
+        const dueAt = moment(new Date(Date.now() + 180000)).utc().format().replace(/:[0-9]{2}Z/, ':00.000Z')
         const med = { type: 'testMed', due: dueAt };
         return request
           .post('/api/meds/app/1')
@@ -312,7 +314,7 @@ describe('/api', () => {
           });
       });
       it('marks slightly overdue medication as taken', () => {
-        const dueAt = new Date(Date.now() - 4500000)
+        const dueAt = moment(new Date(Date.now() - 45000)).utc().format().replace(/:[0-9]{2}Z/, ':00.000Z')
         const med = { type: 'testMed', due: dueAt };
         return request
           .post('/api/meds/app/1')
@@ -354,7 +356,7 @@ describe('/api', () => {
       it('will not mark medication as taken too late', () => {
         const dueAt = new Date(Date.now() - 9000000)
         const med = { type: 'testMed', due: dueAt };
-        return request
+        return request  
           .post('/api/meds/app/1')
           .send(med)
           .then(med => {
@@ -415,7 +417,7 @@ describe('/api', () => {
               });
           })
       });
-      it.only('does not return medications due more than 24h later', () => {
+      it('does not return medications due more than 24h later', () => {
         const time = new Date(Date.now() + 172800000);
         const med = { type: 'testmedtype', due: time }
         return request
