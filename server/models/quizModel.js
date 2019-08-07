@@ -44,6 +44,7 @@ exports.deleteQuiz = ({ quiz_id }) => {
 };
 
 exports.postQuizAlexa = ({ amazon_id, mood, stiffness, slowness, tremor }) => {
+  console.log(mood, stiffness);
   return connection('devices')
     .where({amazon_id})
     .returning('*')
@@ -52,13 +53,16 @@ exports.postQuizAlexa = ({ amazon_id, mood, stiffness, slowness, tremor }) => {
         return { confirmation: false }
       } else {
         const [{user_id}] = users
+
         const completed_at = new Date(Date.now());
         const quiz = { user_id, completed_at, mood, stiffness, slowness, tremor}
+        console.log(quiz, '<<<< before insert');
         return connection
         .insert(quiz)
         .into('quiz')
         .returning('*')
-        .then(()=>{
+        .then((addedQuiz)=>{
+          console.log(addedQuiz);
           return { confirmation: true }
         })
       }
