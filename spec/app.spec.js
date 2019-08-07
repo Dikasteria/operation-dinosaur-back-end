@@ -35,7 +35,7 @@ if(testRequestNew) {
       });
     });
   });
-}
+};
 const testPairDevice = false;
 if(testPairDevice) {
   describe('/codes/pairdevice', () => {
@@ -77,7 +77,7 @@ if(testPairDevice) {
             .post('/api/codes/alexa')
             .set(header)
             .send(body)
-            .expect(400)
+            .expect(200)
             .then(({ body : { confirmation }}) => {
               expect(confirmation).to.equal(false);
             });
@@ -85,7 +85,7 @@ if(testPairDevice) {
       });
     });
   });
-}
+};
 
 const testOther = true;
 if(testOther){

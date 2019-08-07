@@ -52,9 +52,9 @@ pairDevice = (req, res, next) => {
       //no matching code provided
       if(codes.length === 0) {
         const confirmation = false;
-        res.status(400).send({ confirmation });
+        res.status(200).send({ confirmation });
       };
-
+      
     })
     .catch(next);
 
