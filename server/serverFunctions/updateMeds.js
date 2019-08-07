@@ -1,42 +1,80 @@
 const { connection } = require('../connection');
 
-
-
-assignPromptBefore = () => {
-    console.log('medication is due soon')
-    //send push notification
-    //update status to 1
+assignPromptBefore = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - due soon`)
+    const newStatus = 1;
+    if(status < newStatus){
+        console.log(`${id} - send "due soon" notification`)
+        return connection('meds')
+        .where({ id })
+        .update({ status: newStatus })
+        .returning('*')
+        .then(([med]) => med.status)
+        //send push notification
+    };
 };
 
-assignPromptAt = () => {
-    console.log('medication is due now')
-    //send push notification
-    //upate status to 2
+assignPromptAt = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - due now`)
+    const newStatus = 2
+    return connection('meds')
+        .where({ id })
+        .update({ status: newStatus })
+        .returning('*')
+        .then(([med]) => med.status)
+        //send push notification
 };
 
-assignPromptAfterFirst = () => {
-    console.log('send first late reminder')
-    //send push notification
-    //update status to 3
+assignPromptAfterFirst = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - late`)
+    const newStatus = 3
+    return connection('meds')
+        .where({ id })
+        .update({ status: newStatus })
+        .returning('*')
+        .then(([med]) => med.status)
+        //send push notification
 };
 
-assignPromptAfterSecond = () => {
-    console.log('send second late reminder')
-    //send push notification
-    //update status to 4
+assignPromptAfterSecond = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - very late`)
+    const newStatus = 4
+    return connection('meds')
+        .where({ id })
+        .update({ status: newStatus })
+        .returning('*')
+        .then(([med]) => med.status)
+        //send push notification
 };
 
-assignMedTaken = () => {
-    console.log('medication marked as taken')
-    //update status to 10
+assignMedTaken = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - marked as taken`)
+    const newStatus = 10
+    return connection('meds')
+        .where({ id })
+        .update({ status: newStatus })
+        .returning('*')
+        .then(([med]) => med.status)
 };
 
-assignWriteOff = () => {
-    console.log('write off over-due medication as untaken')
-    //update status to 9
+assignWriteOff = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - write off over-due med as untaken`)
+    const newStatus = 9
+    return connection('meds')
+        .where({ id })
+        .update({ status: newStatus })
+        .returning('*')
+        .then(([med]) => med.status)
 };
 
-assignDiscontinued = () => {
+assignDiscontinued = (med) => {
+    const { id, due, type, status } = med;
     console.log('medication discontuned')
     //update statuts to 8
 }

@@ -33,7 +33,8 @@
     "test-db-output": "psql -f ./db/db-test.sql > output.txt",
     "test": "npm run seed-test && mocha spec/app.spec.js",
     "test-utils": "mocha spec/utils.spec.js",
-    "test-insomnia": "npm run setup-dbs && npm run seed && npm start"
+    "test-insomnia": "npm run setup-dbs && npm run seed && npm start",
+    "test-serverfunctions": "npm run setup-dbs && npm run seed && node server/serverFunctions/testServerFunctions.js"
   },
   "keywords": [],
   "author": "",

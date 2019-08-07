@@ -15,46 +15,50 @@ selfQuery = async () => {
         await connection
             .select('*')
             .from('meds')
-            .whereNotIn('status', [9,10])
+            .whereNotIn('status', [ 5, 9, 10])
             .returning('*')
 
     const currentTime = new Date(Date.now());
     const dueTimes = untakenMeds.map(med => med.due)
     const remainingTimes = dueTimes.map(dueTime => (dueTime - currentTime));
+    const remainingMeds = untakenMeds.map(med => {
+        const { id, due } = med;
+        const remainingTime = due - currentTime;
+        return { id, remainingTime }
+    });
     
     // console.log(untakenMeds);
     // console.log(currentTime, 'currentTime');
     // console.log(dueTimes, 'due times');
-    console.log(remainingTimes, 'remaining times');
+    // console.log(remainingTimes, 'remaining times');
+    console.log(remainingMeds);
 
     //set times at which to prompt user
-    const promptBefore = 5000;
+    const promptBefore = 10000;
     const promptAt = 0;
-    const promptAfterFirst = -5000;
-    const promptAfterSecond = -10000;
-    const writeOff = -15000;
+    const promptAfterFirst = -10000;
+    const promptAfterSecond = -20000;
+    const writeOff = -30000;
 
     untakenMeds.forEach(med => {
+        const { id } = med;
+        if(med.taken) {
+            //med marked as taken
+            assignMedTaken(id);
+        } else {
+            //med not marked as taken:
+            //find remainingTime bracket
+            const remainingTime = med.due - currentTime;
+            const brackets = [writeOff, promptAfterSecond, promptAfterFirst, promptAt, promptBefore].filter(bracket => remainingTime <= bracket);
+            const bracket = (brackets.length > 0) ?  brackets[0] : null;
 
-        //check if user has marked as taken
-        if(med.taken) assignMedTaken();
-
-        //medication not marked as taken:
-        //
-        //find remaining time bracket
-        const remainingTime = med.due - currentTime;
-        const brackets = [writeOff, promptAfterSecond, promptAfterFirst, promptAt, promptBefore];
-        while(remainingTime > brackets[0]) brackets.shift();
-        let bracket = 0;
-        if(brackets.length ===0) return;    // no reminders due
-        else bracket = brackets[0];
-
-        if(bracket === writeOff) assignWriteOff();
-        if(bracket === promptAfterSecond) assignPromptAfterSecond();
-        if(bracket === promptAfterFirst) assignPromptAfterFirst();
-        if(bracket === promptAt) assignPromptAt();
-        if(bracket === promptBefore) assignPromptBefore();
-
+            if(bracket === promptBefore) assignPromptBefore(med);
+            if(bracket === promptAt) assignPromptAt(med);
+            if(bracket === promptAfterFirst) assignPromptAfterFirst(med);
+            if(bracket === promptAfterSecond) assignPromptAfterSecond(med);
+            if(bracket === writeOff) assignWriteOff(med);
+            //else no reminder due, do nothing
+        };
     });
 };
 
