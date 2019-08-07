@@ -1,7 +1,8 @@
 const express = require('express');
 const medsRouter = express.Router();
 const {
-  fetchMedsApp,
+  fetchAllMedsApp,
+  fetchDailyMedsApp,
   fetchMedsAlexa,
   addMed,
   updateMed,
@@ -18,12 +19,16 @@ medsRouter
   .all(send405Error);
 
 medsRouter
-  .route('/app/:user_id')
-  .get(fetchMedsApp)
+  .route('/app/daily/:user_id')
+  .get(fetchDailyMedsApp)
+
+medsRouter
+  .route('/app/all/:user_id')
+  .get(fetchAllMedsApp)
   .post(addMed);
 
 medsRouter
-  .route('/app/:med_id')
+  .route('/app/all/:med_id')
   .patch(updateMed)
   .delete(removeMed)
   .all(send405Error);

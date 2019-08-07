@@ -66,7 +66,3 @@ exports.acceptCode = (user_id, amazon_id) => {
     .from('devices')
     .returning('*')
 };
-
-exports.rejectCode = () => {
-  return 'rejecting code'
-}

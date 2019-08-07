@@ -42,3 +42,25 @@ exports.deleteQuiz = ({ quiz_id }) => {
     .where({ id: quiz_id })
     .delete();
 };
+
+exports.postQuizAlexa = ({ amazon_id, mood, stiffness, slowness, tremor }) => {
+  return connection('devices')
+    .where({amazon_id})
+    .returning('*')
+    .then(users => {
+      if (!users.length) {
+        return { confirmation: false }
+      } else {
+        const [{user_id}] = users
+        const completed_at = new Date(Date.now());
+        const quiz = { user_id, completed_at, mood, stiffness, slowness, tremor}
+        return connection
+        .insert(quiz)
+        .into('quiz')
+        .returning('*')
+        .then(()=>{
+          return { confirmation: true }
+        })
+      }
+    })
+}

@@ -1,6 +1,6 @@
 const { connection } = require('../connection');
 
-exports.getMeds = ({ user_id }) => {
+exports.getAllMeds = ({ user_id }) => {
   return connection
     .select('*')
     .from('users')
@@ -14,9 +14,37 @@ exports.getMeds = ({ user_id }) => {
           .where({ user_id })
       }
         else if (users.length === 0){
-          return Promise.reject({status: 404, msg: 'No medications found'});
+          return Promise.reject({status: 404, msg: 'No such user'});
       };
     });
+};
+
+exports.getDailyMeds = ({ user_id }) => {
+  return connection
+  .select('*')
+  .from('users')
+  .where({ id: user_id })
+  .returning('*')
+  .then(users => {
+    if(users.length === 1){
+      return connection
+        .select('*')
+        .from('meds')
+        .where({ user_id })
+        .then(meds => {
+          const now = new Date(Date.now());
+          const plus24 = new Date(Date.now() + 86400000)
+          const filteredMeds =  meds.filter(med => {
+            if(med.due < now || med.due > plus24) return false;
+            else return true;
+          });
+          return(filteredMeds);
+        });
+    }
+      else if (users.length === 0){
+        return Promise.reject({status: 404, msg: 'No such user'});
+    };
+  });
 };
 
 exports.getMedsAlexa = ({ amazon_id }) => {
@@ -57,15 +85,30 @@ exports.postMed = ({ user_id, type, due }) => {
     });
 };
 
-exports.patchMed = ({ med_id, taken }) => {
-  const taken_at = new Date(Date.now());
-  return connection('meds')
-    .where({ id: med_id })
-    .update({ taken, taken_at })
-    .returning('*')
-    .then(([patchedMed]) => {
-      return patchedMed;
-    });
+exports.patchMed = (args) => {
+  const { med_id, type, due, taken, taken_at, status } = args
+  const updateValues = {}
+  
+  if(type) updateValues.type = type;
+  if(due) updateValues.due = due;
+  if(taken !== undefined) {
+    updateValues.taken = taken;
+    updateValues.taken_at = new Date(Date.now());};
+  if(taken_at) updateValues = taken_at
+  if(status) updateValues.status = status;
+
+  if(Object.keys(updateValues).length>0){
+    return connection('meds')
+      .where({ id: med_id })
+      .update({ ...updateValues })
+      .returning('*')
+      .then(([patchedMed]) => {
+        return patchedMed;
+      });
+  } else {
+    //do not send empty update()
+    return Promise.reject({status: 400, msg: 'bad request'});
+  };
 };
 
 exports.deleteMed = ({ med_id }) => {

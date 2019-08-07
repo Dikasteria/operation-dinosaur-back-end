@@ -1,7 +1,24 @@
-const { getMeds, getMedsAlexa, postMed, patchMed, deleteMed, patchMedTakenApp, patchMedTakenAlexa } = require('../models/');
+const {
+  getAllMeds,
+  getDailyMeds,
+  getMedsAlexa,
+  postMed,
+  patchMed,
+  deleteMed,
+  patchMedTakenApp,
+  patchMedTakenAlexa
+} = require('../models/');
 
-exports.fetchMedsApp = (req, res, next) => {
-  getMeds({ ...req.params })
+exports.fetchAllMedsApp = (req, res, next) => {
+  getAllMeds({ ...req.params })
+    .then(meds => {
+      res.status(200).send({ meds });
+    })
+    .catch(next);
+};
+
+exports.fetchDailyMedsApp = (req, res, next) => {
+  getDailyMeds({ ...req.params })
     .then(meds => {
       res.status(200).send({ meds });
     })
@@ -9,8 +26,8 @@ exports.fetchMedsApp = (req, res, next) => {
 };
 
 exports.fetchMedsAlexa = (req, res, next) => {
-    if(req.headers && req.headers.amazon_id){
-      const amazon_id = req.headers.amazon_id;
+    if(req.headers && req.headers.amazonid){
+      const amazon_id = req.headers.amazonid;
       getMedsAlexa({ amazon_id })
         .then(meds => {
           res.status(200).send({ meds });
@@ -49,12 +66,12 @@ exports.takenMedsApp = (req, res, next) => {
       if(result.confirmation) res.status(201).send({ ...result });
       else res.status(400).send({ ... result });
     })
-    .catch(next);
+    .catch(err => console.log(err));
 };
 
 exports.takenMedsAlexa = (req, res, next) => {
-  if(req.headers && req.headers.amazon_id){
-    const amazon_id = req.headers.amazon_id;
+  if(req.headers && req.headers.amazonid){
+    const amazon_id = req.headers.amazonid;
     patchMedTakenAlexa({ amazon_id })
       .then(result => {
         if(result.confirmation) res.status(201).send({ ...result });

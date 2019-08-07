@@ -4,19 +4,25 @@ const {
   fetchQuiz,
   addQuiz,
   updateQuiz,
-  removeQuiz
+  removeQuiz,
+  addQuizAlexa
 } = require('../controllers/');
 const { send405Error } = require('../../errors');
 
 quizRouter
-  .route('/:user_id')
+  .route('/app/:user_id')
   .get(fetchQuiz)
   .post(addQuiz);
 
 quizRouter
-  .route('/:quiz_id')
+  .route('/app/:quiz_id')
   .patch(updateQuiz)
   .delete(removeQuiz)
   .all(send405Error);
+
+quizRouter
+  .route('/alexa')
+  .post(addQuizAlexa)
+  .all(send405Error)
 
 module.exports = { quizRouter };
