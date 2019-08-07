@@ -7,7 +7,7 @@ const {
   acceptCode
 } = require('../models/');
 
-const codeExpiry = 3000;
+const codeExpiry = 30000;
 
 fetchCode = (req, res, next) => {
   const { user_id } = req.params;
@@ -54,7 +54,7 @@ pairDevice = (req, res, next) => {
         const confirmation = false;
         res.status(200).send({ confirmation });
       };
-      
+
     })
     .catch(next);
 
