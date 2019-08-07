@@ -1,4 +1,5 @@
 const { connection } = require('../connection');
+const { sendPush } = require('./sendPush');
 
 assignPromptBefore = (med) => {
     const { id, due, type, status } = med;
@@ -10,8 +11,10 @@ assignPromptBefore = (med) => {
             .where({ id })
             .update({ status: newStatus })
             .returning('*')
-            .then(([med]) => med.status)
-            //send push notification
+            .then(x => {
+                const body = `your ${type} is due at ${due}`
+                sendPush({ user_id: id, body })
+            });
     };
 };
 
@@ -25,12 +28,13 @@ assignPromptAt = (med) => {
             .where({ id })
             .update({ status: newStatus })
             .returning('*')
-            .then(([med]) => med.status)
-            //send push notification
+            .then(x => {
+                const body = `your ${type} is due now`
+                sendPush({ user_id: id, body })
+            });
     };
 };
-
-assignPromptAfterFirst = (med) => {
+    assignPromptLate = (med) => {
     const { id, due, type, status } = med;
     console.log(`${id} - late`)
     const newStatus = 3
@@ -40,12 +44,14 @@ assignPromptAfterFirst = (med) => {
             .where({ id })
             .update({ status: newStatus })
             .returning('*')
-            .then(([med]) => med.status)
-            //send push notification
+            .then(x => {
+                const body = `your ${type} was due at ${due} and has not been recorded as taken`
+                sendPush({ user_id: id, body })
+            });
     };
 };
 
-assignPromptAfterSecond = (med) => {
+assignPromptVeryLate = (med) => {
     const { id, due, type, status } = med;
     console.log(`${id} - very late`)
     const newStatus = 4
@@ -55,8 +61,10 @@ assignPromptAfterSecond = (med) => {
             .where({ id })
             .update({ status: newStatus })
             .returning('*')
-            .then(([med]) => med.status)
-            //send push notification
+            .then(x => {
+                const body = `your ${type} was due at ${due} and has not been recorded as taken`
+                sendPush({ user_id: id, body })
+            });
     };
 };
 
@@ -97,11 +105,11 @@ assignDiscontinued = (med) => {
 
 
 module.exports = {
-    assignMedTaken,
     assignPromptBefore,
     assignPromptAt,
-    assignPromptAfterFirst,
-    assignPromptAfterSecond,
+    assignPromptLate,
+    assignPromptVeryLate,
     assignWriteOff,
+    assignMedTaken,
     assignDiscontinued
 }

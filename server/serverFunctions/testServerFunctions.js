@@ -1,6 +1,4 @@
-const { selfQuery } = require('./index');
-
-
+const { selfQuery } = require('./selfQuery');
 const { connection } = require('../connection');
 
 

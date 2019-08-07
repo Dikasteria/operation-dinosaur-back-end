@@ -3,8 +3,8 @@ const {
     assignMedTaken,
     assignPromptBefore,
     assignPromptAt,
-    assignPromptAfterFirst,
-    assignPromptAfterSecond,
+    assignPromptLate,
+    assignPromptVeryLate,
     assignWriteOff,
     assignDiscontinued
 } = require('./updateMeds');
@@ -47,8 +47,8 @@ selfQuery = async () => {
 
             if(bracket === promptBefore) assignPromptBefore(med);
             if(bracket === promptAt) assignPromptAt(med);
-            if(bracket === promptAfterFirst) assignPromptAfterFirst(med);
-            if(bracket === promptAfterSecond) assignPromptAfterSecond(med);
+            if(bracket === promptAfterFirst) assignPromptLate(med);
+            if(bracket === promptAfterSecond) assignPromptVeryLate(med);
             if(bracket === writeOff) assignWriteOff(med);
             //else no reminder due, do nothing
         };
