@@ -4,7 +4,8 @@ const { connection } = require('../connection');
 
 ///
 
-const recurTimeout = 3000
+    //set server requery timeout
+    const recurTimeout = 3000
 
 ///
 

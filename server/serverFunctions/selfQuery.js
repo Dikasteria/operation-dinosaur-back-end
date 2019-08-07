@@ -9,6 +9,15 @@ const {
     assignDiscontinued
 } = require('./updateMeds');
 
+
+    //set times at which to prompt user
+    const promptBefore = 10000;
+    const promptAt = 0;
+    const promptLate = -10000;
+    const promptVeryLate = -20000;
+    const writeOff = -30000;
+
+
 selfQuery = async () => {
 
     const untakenMeds =
@@ -26,29 +35,20 @@ selfQuery = async () => {
     });
     console.log(remainingMeds);
 
-    //set times at which to prompt user
-    const promptBefore = 10000;
-    const promptAt = 0;
-    const promptAfterFirst = -10000;
-    const promptAfterSecond = -20000;
-    const writeOff = -30000;
-
     untakenMeds.forEach(med => {
         const { id } = med;
-        if(med.taken) {
-            //med marked as taken
-            assignMedTaken(id);
-        } else {
-            //med not marked as taken:
+        if(med.taken) assignMedTaken(id);
+        else {
             //find remainingTime bracket
             const remainingTime = med.due - currentTime;
-            const brackets = [writeOff, promptAfterSecond, promptAfterFirst, promptAt, promptBefore].filter(bracket => remainingTime <= bracket);
+            const brackets = [writeOff, promptVeryLate, promptLate, promptAt, promptBefore].filter(bracket => remainingTime <= bracket);
             const bracket = (brackets.length > 0) ?  brackets[0] : null;
 
+            //update accordingly
             if(bracket === promptBefore) assignPromptBefore(med);
             if(bracket === promptAt) assignPromptAt(med);
-            if(bracket === promptAfterFirst) assignPromptLate(med);
-            if(bracket === promptAfterSecond) assignPromptVeryLate(med);
+            if(bracket === promptLate) assignPromptLate(med);
+            if(bracket === promptVeryLate) assignPromptVeryLate(med);
             if(bracket === writeOff) assignWriteOff(med);
             //else no reminder due, do nothing
         };
