@@ -85,15 +85,31 @@ exports.postMed = ({ user_id, type, due }) => {
     });
 };
 
-exports.patchMed = ({ med_id, taken }) => {
-  const taken_at = new Date(Date.now());
-  return connection('meds')
-    .where({ id: med_id })
-    .update({ taken, taken_at })
-    .returning('*')
-    .then(([patchedMed]) => {
-      return patchedMed;
-    });
+exports.patchMed = (args) => {
+  const { med_id, type, due, taken, taken_at, status } = args
+  const updateValues = {}
+  
+  if(type) updateValues.type = type;
+  if(due) updateValues.due = due;
+  if(taken !== undefined) {
+    updateValues.taken = taken;
+    updateValues.taken_at = new Date(Date.now());};
+  if(taken_at) updateValues = taken_at
+  if(status) updateValues.status = status;
+
+  if(Object.keys(updateValues).length>0){
+    console.log(`updating ${Object.keys(updateValues).length} values`, updateValues)
+    return connection('meds')
+      .where({ id: med_id })
+      .update({ ...updateValues })
+      .returning('*')
+      .then(([patchedMed]) => {
+        return patchedMed;
+      });
+  } else {
+    //do not send empty update()
+    return Promise.reject({status: 400, msg: 'bad request'});
+  };
 };
 
 exports.deleteMed = ({ med_id }) => {

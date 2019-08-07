@@ -66,7 +66,7 @@ exports.takenMedsApp = (req, res, next) => {
       if(result.confirmation) res.status(201).send({ ...result });
       else res.status(400).send({ ... result });
     })
-    .catch(next);
+    .catch(err => console.log(err));
 };
 
 exports.takenMedsAlexa = (req, res, next) => {

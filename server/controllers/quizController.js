@@ -38,14 +38,14 @@ exports.removeQuiz = (req, res, next) => {
 
 exports.addQuizAlexa = (req, res, next) => {
   if (req.headers.amazonid) {
-    const { amazonid: amazon_id } = req.headers
-    const { body } = req
-    return postQuizAlexa({amazon_id, ...body})
+    const { amazonid: amazon_id } = req.headers;
+    const { data : quizAnswers } = req;
+    return postQuizAlexa({amazon_id, ...quizAnswers})
       .then(({ confirmation }) => {
         res.status(201).send({ confirmation })
       })
-      .catch(next)
+      .catch(next);
   }
-  return Promise.reject({status: 400, msg: 'bad request'})
-}
+  next();
+};
 

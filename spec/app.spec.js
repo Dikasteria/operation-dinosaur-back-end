@@ -367,10 +367,46 @@ describe('/api', () => {
             expect(patchedMed.taken).to.eql(true);
           });
       });
+      it('updates status', () => {
+        return request
+          .patch('/api/meds/app/all/1')
+          .send({ status: 5 })
+          .expect(200)
+          .then(({ body: { patchedMed } }) => {
+            expect(patchedMed.status).to.eql(5);
+          });
+      });
+      it('updates type', () => {
+        return request
+          .patch('/api/meds/app/all/1')
+          .send({ type: 'correct my med spelling' })
+          .expect(200)
+          .then(({ body: { patchedMed } }) => {
+            expect(patchedMed.type).to.eql('correct my med spelling');
+          });
+      });
       it('status:400 when patching a value of incorrect type', () => {
         return request
           .patch('/api/meds/app/all/1')
           .send({ taken: 314 })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+      it('status:400 when patching invalid column', () => {
+        return request
+          .patch('/api/meds/app/all/1')
+          .send({ cabbages: 314 })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal('bad request');
+          });
+      });
+      it('status:400 when given no values to patch', () => {
+        return request
+          .patch('/api/meds/app/all/1')
+          .send({})
           .expect(400)
           .then(({ body: { msg } }) => {
             expect(msg).to.equal('bad request');

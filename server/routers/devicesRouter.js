@@ -10,7 +10,7 @@ devicesRouter
   .all(send405Error);
 
 devicesRouter
-  .route('/alexa/')
+  .route('/alexa')
   .get(fetchPair)
   .all(send405Error)
 
