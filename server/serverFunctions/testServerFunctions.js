@@ -18,24 +18,30 @@ function recurQuery() {
 
 
 async function seedData(){
-    const due3 = new Date(Date.now() + 18000);
-    const due2 = new Date(Date.now() + 12000);
     const due1 = new Date(Date.now() + 8000);
+    const due2 = new Date(Date.now() + 12000);
+    const due3 = new Date(Date.now() + 18000);
+    const due4 = new Date(Date.now() + 22000);
     const newMeds = [
         {
             user_id: 1,
             due: due1,
-            type: 'testmed'
+            type: 'testmed1'
         },
         {
             user_id: 1,
             due: due2,
-            type: 'testmed'
+            type: 'testmedoline'
         },
         {
             user_id: 1,
             due: due3,
-            type: 'testmed'
+            type: 'testmedanol'
+        },
+        {
+            user_id: 1,
+            due: due4,
+            type: 'testmedicil'
         }
     ];
     return connection

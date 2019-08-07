@@ -19,18 +19,11 @@ selfQuery = async () => {
             .returning('*')
 
     const currentTime = new Date(Date.now());
-    const dueTimes = untakenMeds.map(med => med.due)
-    const remainingTimes = dueTimes.map(dueTime => (dueTime - currentTime));
     const remainingMeds = untakenMeds.map(med => {
         const { id, due } = med;
         const remainingTime = due - currentTime;
         return { id, remainingTime }
     });
-    
-    // console.log(untakenMeds);
-    // console.log(currentTime, 'currentTime');
-    // console.log(dueTimes, 'due times');
-    // console.log(remainingTimes, 'remaining times');
     console.log(remainingMeds);
 
     //set times at which to prompt user

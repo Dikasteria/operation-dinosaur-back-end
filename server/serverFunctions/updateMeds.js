@@ -7,11 +7,11 @@ assignPromptBefore = (med) => {
     if(status < newStatus){
         console.log(`${id} - send "due soon" notification`)
         return connection('meds')
-        .where({ id })
-        .update({ status: newStatus })
-        .returning('*')
-        .then(([med]) => med.status)
-        //send push notification
+            .where({ id })
+            .update({ status: newStatus })
+            .returning('*')
+            .then(([med]) => med.status)
+            //send push notification
     };
 };
 
@@ -19,36 +19,58 @@ assignPromptAt = (med) => {
     const { id, due, type, status } = med;
     console.log(`${id} - due now`)
     const newStatus = 2
-    return connection('meds')
-        .where({ id })
-        .update({ status: newStatus })
-        .returning('*')
-        .then(([med]) => med.status)
-        //send push notification
+    if(status < newStatus){
+        console.log(`${id} - send "due now" notification`)
+        return connection('meds')
+            .where({ id })
+            .update({ status: newStatus })
+            .returning('*')
+            .then(([med]) => med.status)
+            //send push notification
+    };
 };
 
 assignPromptAfterFirst = (med) => {
     const { id, due, type, status } = med;
     console.log(`${id} - late`)
     const newStatus = 3
-    return connection('meds')
-        .where({ id })
-        .update({ status: newStatus })
-        .returning('*')
-        .then(([med]) => med.status)
-        //send push notification
+    if(status < newStatus){
+        console.log(`${id} - send first "late" notification`)
+        return connection('meds')
+            .where({ id })
+            .update({ status: newStatus })
+            .returning('*')
+            .then(([med]) => med.status)
+            //send push notification
+    };
 };
 
 assignPromptAfterSecond = (med) => {
     const { id, due, type, status } = med;
     console.log(`${id} - very late`)
     const newStatus = 4
-    return connection('meds')
-        .where({ id })
-        .update({ status: newStatus })
-        .returning('*')
-        .then(([med]) => med.status)
-        //send push notification
+    if(status < newStatus){
+        console.log(`${id} - send second "late" notification`)
+        return connection('meds')
+            .where({ id })
+            .update({ status: newStatus })
+            .returning('*')
+            .then(([med]) => med.status)
+            //send push notification
+    };
+};
+
+assignWriteOff = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - write off over-due med as untaken`)
+    const newStatus = 9
+    if(status < newStatus){
+        return connection('meds')
+            .where({ id })
+            .update({ status: newStatus })
+            .returning('*')
+            .then(([med]) => med.status)
+    };
 };
 
 assignMedTaken = (med) => {
@@ -62,21 +84,15 @@ assignMedTaken = (med) => {
         .then(([med]) => med.status)
 };
 
-assignWriteOff = (med) => {
+assignDiscontinued = (med) => {
     const { id, due, type, status } = med;
-    console.log(`${id} - write off over-due med as untaken`)
-    const newStatus = 9
+    console.log(`${id} - marked as discontinued`)
+    const newStatus = 5
     return connection('meds')
         .where({ id })
         .update({ status: newStatus })
         .returning('*')
         .then(([med]) => med.status)
-};
-
-assignDiscontinued = (med) => {
-    const { id, due, type, status } = med;
-    console.log('medication discontuned')
-    //update statuts to 8
 }
 
 
