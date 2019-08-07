@@ -39,7 +39,7 @@ exports.removeQuiz = (req, res, next) => {
 exports.addQuizAlexa = (req, res, next) => {
   if (req.headers.amazonid) {
     const { amazonid: amazon_id } = req.headers;
-    const { data : quizAnswers } = req;
+    const { body : quizAnswers } = req;
     return postQuizAlexa({amazon_id, ...quizAnswers})
       .then(({ confirmation }) => {
         res.status(201).send({ confirmation })
