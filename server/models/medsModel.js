@@ -98,7 +98,6 @@ exports.patchMed = (args) => {
   if(status) updateValues.status = status;
 
   if(Object.keys(updateValues).length>0){
-    console.log(`updating ${Object.keys(updateValues).length} values`, updateValues)
     return connection('meds')
       .where({ id: med_id })
       .update({ ...updateValues })

@@ -50,7 +50,7 @@ if(testPairDevice) {
             return inputCode;
           })
           .then(inputCode => {
-            const header = { amazon_id: '<<<<<<<<<<<<<  test CODE'};
+            const header = { amazonid: '<<<<<<<<<<<<<  test CODE'};
             const body = { inputCode }
             return request
             .post('/api/codes/alexa')
@@ -58,7 +58,28 @@ if(testPairDevice) {
             .send(body)
             .expect(201)
             .then(({ body : { confirmation }}) => {
-              expect(confirmation).to.equal(`device paired successfuly`);
+              expect(confirmation).to.equal(true);
+            });
+          });
+      });
+      it('rejects an invalid key', () => {
+        return request
+          .get('/api/codes/requestnew/2')
+          .expect(200)
+          .then(({ body : { code }}) => {
+            const inputCode = code.code;
+            return inputCode;
+          })
+          .then(inputCode => {
+            const header = { amazonid: '<<<<<<<<<<<<<  test CODE'};
+            const body = { inputCode: '0000' }
+            return request
+            .post('/api/codes/alexa')
+            .set(header)
+            .send(body)
+            .expect(400)
+            .then(({ body : { confirmation }}) => {
+              expect(confirmation).to.equal(false);
             });
           });
       });

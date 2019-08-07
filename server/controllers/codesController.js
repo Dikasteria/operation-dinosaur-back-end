@@ -4,7 +4,6 @@ const {
   deleteCode,
   getAllCodes,
   checkCode,
-  rejectCode,
   acceptCode
 } = require('../models/');
 
@@ -30,8 +29,8 @@ fetchAllCodes = (req, res, next) => {
 };
 
 pairDevice = (req, res, next) => {
-  if (req.headers && req.headers.amazon_id) {
-    const amazon_id = req.headers.amazon_id;
+  if (req.headers && req.headers.amazonid) {
+    const amazon_id = req.headers.amazonid;
     const inputCode = req.body.inputCode;
     return checkCode(inputCode).then(codes => {
 
@@ -41,10 +40,10 @@ pairDevice = (req, res, next) => {
         return acceptCode( user_id, amazon_id )
           .then(([addedDevice]) => {
             if(addedDevice.id){
-              const confirmation = 'device paired successfuly';
+              const confirmation = true;
               res.status(201).send({ confirmation });
             } else {
-              const confirmation = 'device failed to pair'
+              const confirmation = false;
               res.status(500).send({ confirmation });
             };
           });
@@ -52,14 +51,16 @@ pairDevice = (req, res, next) => {
 
       //no matching code provided
       if(codes.length === 0) {
-        const confirmation = 'the entered code was not correct';
+        const confirmation = false;
         res.status(400).send({ confirmation });
       };
 
-    });
+    })
+    .catch(next);
 
   } else {
     //throw error - request doesnt have appropriate header
+    next();
   };
 
 };
