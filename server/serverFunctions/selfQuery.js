@@ -5,21 +5,19 @@ const {
     assignPromptAt,
     assignPromptLate,
     assignPromptVeryLate,
-    assignWriteOff,
-    assignDiscontinued
+    assignWriteOff
 } = require('./updateMeds');
-
-
-    //set times at which to prompt user
-    const promptBefore = 10000;
-    const promptAt = 0;
-    const promptLate = -10000;
-    const promptVeryLate = -20000;
-    const writeOff = -30000;
+ const {
+    promptBefore,
+    promptAt,
+    promptLate,
+    promptVeryLate,
+    writeOff
+} = require('./parameters')
 
 
 selfQuery = async () => {
-
+    const currentTime = new Date(Date.now());
     const untakenMeds =
         await connection
             .select('*')
@@ -27,13 +25,7 @@ selfQuery = async () => {
             .whereNotIn('status', [ 5, 9, 10])
             .returning('*')
 
-    const currentTime = new Date(Date.now());
-    const remainingMeds = untakenMeds.map(med => {
-        const { id, due } = med;
-        const remainingTime = due - currentTime;
-        return { id, remainingTime }
-    });
-    console.log(remainingMeds);
+    testLog(untakenMeds, currentTime);
 
     untakenMeds.forEach(med => {
         const { id } = med;
@@ -55,4 +47,13 @@ selfQuery = async () => {
     });
 };
 
-module.exports = { selfQuery};
+testLog = (untakenMeds, currentTime) => {
+    const remainingMeds = untakenMeds.map(med => {
+        const { id, due, status } = med;
+        const remainingTime = due - currentTime;
+        return { id, remainingTime, status }
+    });
+    console.log(remainingMeds);
+};
+
+module.exports = { selfQuery };

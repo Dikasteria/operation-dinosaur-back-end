@@ -5,7 +5,7 @@ assignPromptBefore = (med) => {
     const { id, due, type, status } = med;
     console.log(`${id} - due soon`)
     const newStatus = 1;
-    if(status < newStatus){
+    if(status !== newStatus){
         console.log(`${id} - send "due soon" notification`)
         return connection('meds')
             .where({ id })
@@ -22,7 +22,7 @@ assignPromptAt = (med) => {
     const { id, due, type, status } = med;
     console.log(`${id} - due now`)
     const newStatus = 2
-    if(status < newStatus){
+    if(status !== newStatus){
         console.log(`${id} - send "due now" notification`)
         return connection('meds')
             .where({ id })
@@ -34,11 +34,12 @@ assignPromptAt = (med) => {
             });
     };
 };
-    assignPromptLate = (med) => {
+
+assignPromptLate = (med) => {
     const { id, due, type, status } = med;
     console.log(`${id} - late`)
     const newStatus = 3
-    if(status < newStatus){
+    if(status !== newStatus){
         console.log(`${id} - send first "late" notification`)
         return connection('meds')
             .where({ id })
@@ -55,7 +56,7 @@ assignPromptVeryLate = (med) => {
     const { id, due, type, status } = med;
     console.log(`${id} - very late`)
     const newStatus = 4
-    if(status < newStatus){
+    if(status !== newStatus){
         console.log(`${id} - send second "late" notification`)
         return connection('meds')
             .where({ id })
@@ -72,12 +73,12 @@ assignWriteOff = (med) => {
     const { id, due, type, status } = med;
     console.log(`${id} - write off over-due med as untaken`)
     const newStatus = 9
-    if(status < newStatus){
+    if(status !== newStatus){
         return connection('meds')
             .where({ id })
             .update({ status: newStatus })
             .returning('*')
-            .then(([med]) => med.status)
+            .then(x => {});
     };
 };
 
@@ -89,7 +90,16 @@ assignMedTaken = (med) => {
         .where({ id })
         .update({ status: newStatus })
         .returning('*')
-        .then(([med]) => med.status)
+        .then(([med]) => {
+            const { type, due, user_id } = med;
+            const newDue = (due + 86400000)
+            const newMed = [{ user_id, type, due: newDue}]
+            return connection
+                .insert(newMed)
+                .into('meds')
+                .returning('*')
+                .then(x => {});
+        });
 };
 
 assignDiscontinued = (med) => {
@@ -100,8 +110,8 @@ assignDiscontinued = (med) => {
         .where({ id })
         .update({ status: newStatus })
         .returning('*')
-        .then(([med]) => med.status)
-}
+        .then(x => {});
+};
 
 
 module.exports = {
