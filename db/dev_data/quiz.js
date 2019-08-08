@@ -52,7 +52,7 @@ module.exports = [
   },
   {
     user_id: 1,
-    completed_at: 1565470800000,
+    completed_at: 156547080000,
     mood: 3,
     stiffness: 3,
     slowness: 1,
@@ -60,7 +60,7 @@ module.exports = [
   },
   {
     user_id: 1,
-    completed_at: 1565557200000,
+    completed_at: 1565557200,
     mood: 5,
     stiffness: 3,
     slowness: 4,

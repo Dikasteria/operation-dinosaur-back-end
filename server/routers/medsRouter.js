@@ -1,17 +1,42 @@
 const express = require('express');
 const medsRouter = express.Router();
-const { fetchMeds, addMed, updateMed, removeMed } = require('../controllers/');
+const {
+  fetchAllMedsApp,
+  fetchDailyMedsApp,
+  fetchMedsAlexa,
+  addMed,
+  updateMed,
+  removeMed,
+  takenMedsApp,
+  takenMedsAlexa
+} = require('../controllers/');
 const { send405Error } = require('../../errors');
 
+
 medsRouter
-  .route('/:user_id')
-  .get(fetchMeds)
+  .route('/app/taken/:user_id')
+  .post(takenMedsApp)
+  .all(send405Error);
+
+medsRouter
+  .route('/app/daily/:user_id')
+  .get(fetchDailyMedsApp)
+
+medsRouter
+  .route('/app/all/:user_id')
+  .get(fetchAllMedsApp)
   .post(addMed);
 
 medsRouter
-  .route('/:med_id')
+  .route('/app/all/:med_id')
   .patch(updateMed)
   .delete(removeMed)
+  .all(send405Error);
+
+medsRouter
+  .route('/alexa')
+  .get(fetchMedsAlexa)
+  .post(takenMedsAlexa)
   .all(send405Error);
 
 module.exports = { medsRouter };

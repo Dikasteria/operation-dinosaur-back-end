@@ -1,4 +1,4 @@
-const { getDevices, postDevice, checkCode } = require('../models');
+const { getDevices, postDevice, checkCode, checkPair } = require('../models');
 
 exports.fetchDevices = (req, res, next) => {
   getDevices({ ...req.params })
@@ -32,3 +32,11 @@ exports.addDevice = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.fetchPair = ({ headers: {amazonid: amazon_id} }, res, next) => {
+  checkPair(amazon_id)
+    .then((confirmation) => {
+      res.status(200).send(confirmation)
+    })
+    .catch(next)
+}

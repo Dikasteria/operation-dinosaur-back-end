@@ -1,6 +1,6 @@
 const ENV = process.env.NODE_ENV || 'development';
 const { DB_URL } = process.env;
-// const { login } = require("./config");
+const { login } = require("./config");
 
 const baseConfig = {
   client: 'pg',
@@ -15,16 +15,16 @@ const baseConfig = {
 const customConfig = {
   development: {
     connection: {
-      database: 'op_dino_dev'
-      // username: login.username,
-      // password: login.password
+      database: 'op_dino_dev',
+      username: login.username,
+      password: login.password
     }
   },
   test: {
     connection: {
-      database: 'op_dino_test'
-      // username: login.username,
-      // password: login.password
+      database: 'op_dino_test',
+      username: login.username,
+      password: login.password
     }
   },
   production: {

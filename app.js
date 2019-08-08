@@ -12,8 +12,8 @@ app.use(express.json());
 app.use(cors());
 app.use('/api', apiRouter);
 
-app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
+app.use(handleCustomErrors);
 app.use(handleServerErrors);
 
 module.exports = { app };

@@ -5,7 +5,9 @@ const {
     assignPromptAt,
     assignPromptAfterFirst,
     assignPromptAfterSecond,
-    assignWriteOff } = require('./updateMeds');
+    assignWriteOff,
+    assignDiscontinued
+} = require('./updateMeds');
 
 selfQuery = async () => {
 
