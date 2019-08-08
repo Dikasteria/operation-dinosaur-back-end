@@ -1,6 +1,5 @@
 const { selfQuery } = require('./selfQuery');
 const { recurTimeout } = require('./parameters');
-const { seedData } = require('./seedTestData')
 
 function recurQuery() {
     selfQuery();
@@ -8,10 +7,8 @@ function recurQuery() {
     setTimeout(recurQuery, recurTimeout)
 };
 
-    
-seedData()
-    .then(x => {
 
-    recurQuery();
-    
-});
+recurQuery();
+
+
+module.exports = { recurQuery, recurTimeout }
