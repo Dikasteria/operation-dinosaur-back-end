@@ -39,3 +39,5 @@ async function seedData() {
 }
 
 seedData();
+
+module.exports = { seedData };

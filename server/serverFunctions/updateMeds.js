@@ -1,6 +1,6 @@
 const { connection } = require("../connection");
 const { sendPush } = require("./sendPush");
-import moment from "moment";
+const moment = require("moment");
 
 convertTime = time => {
   return moment(time)

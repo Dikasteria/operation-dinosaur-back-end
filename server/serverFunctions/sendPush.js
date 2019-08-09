@@ -13,9 +13,10 @@ exports.sendPush = ({ user_id, body }) => {
     .then(pushKeys => {
       // DB returns array of objects => get values from keys
       const pushTokens = pushKeys.map(pushKey => pushKey.push_key);
-      sendPushNotifications(pushTokens, body);
-
-      sendPushNotifications(pushTokens, body);
+      sendPushNotifications(
+        ["ExponentPushToken[LzyhS0LrRcKsRMfLcS4rS0]"],
+        body
+      );
     });
 };
 
