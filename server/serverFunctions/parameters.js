@@ -1,21 +1,18 @@
-
-
 //set frequency of server monitoring function
-const recurTimeout = 3000
+const recurTimeout = 300000;
 
 //set times at which to prompt user
-const promptBefore = 10000;
+const promptBefore = 900000;
 const promptAt = 0;
-const promptLate = -10000;
-const promptVeryLate = -20000;
-const writeOff = -30000;
-
+const promptLate = -1800000;
+const promptVeryLate = -3600000;
+const writeOff = -5400000;
 
 module.exports = {
-    recurTimeout,
-    promptBefore,
-    promptAt,
-    promptLate,
-    promptVeryLate,
-    writeOff
+  recurTimeout,
+  promptBefore,
+  promptAt,
+  promptLate,
+  promptVeryLate,
+  writeOff
 };
