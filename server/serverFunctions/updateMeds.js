@@ -1,45 +1,125 @@
 const { connection } = require('../connection');
+const { sendPush } = require('./sendPush');
 
-assignMedTaken = () => {
-    console.log('medication marked as taken')
-    //update status to 10
+assignPromptBefore = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - due soon`)
+    const newStatus = 1;
+    if(status !== newStatus){
+        console.log(`${id} - send "due soon" notification`)
+        return connection('meds')
+            .where({ id })
+            .update({ status: newStatus })
+            .returning('*')
+            .then(x => {
+                const body = `your ${type} is due at ${due}`
+                sendPush({ user_id: id, body })
+            });
+    };
 };
 
-assignPromptBefore = () => {
-    console.log('medication is due soon')
-    //send push notification
-    //update status to 1
+assignPromptAt = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - due now`)
+    const newStatus = 2
+    if(status !== newStatus){
+        console.log(`${id} - send "due now" notification`)
+        return connection('meds')
+            .where({ id })
+            .update({ status: newStatus })
+            .returning('*')
+            .then(x => {
+                const body = `your ${type} is due now`
+                sendPush({ user_id: id, body })
+            });
+    };
 };
 
-assignPromptAt = () => {
-    console.log('medication is due now')
-    //send push notification
-    //upate status to 2
+assignPromptLate = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - late`)
+    const newStatus = 3
+    if(status !== newStatus){
+        console.log(`${id} - send first "late" notification`)
+        return connection('meds')
+            .where({ id })
+            .update({ status: newStatus })
+            .returning('*')
+            .then(x => {
+                const body = `your ${type} was due at ${due} and has not been recorded as taken`
+                sendPush({ user_id: id, body })
+            });
+    };
 };
 
-assignPromptAfterFirst = () => {
-    console.log('send first late reminder')
-    //send push notification
-    //update status to 3
+assignPromptVeryLate = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - very late`)
+    const newStatus = 4
+    if(status !== newStatus){
+        console.log(`${id} - send second "late" notification`)
+        return connection('meds')
+            .where({ id })
+            .update({ status: newStatus })
+            .returning('*')
+            .then(x => {
+                const body = `your ${type} was due at ${due} and has not been recorded as taken`
+                sendPush({ user_id: id, body })
+            });
+    };
 };
 
-assignPromptAfterSecond = () => {
-    console.log('send second late reminder')
-    //send push notification
-    //update status to 4
+assignWriteOff = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - write off over-due med as untaken`)
+    const newStatus = 9
+    if(status !== newStatus){
+        return connection('meds')
+            .where({ id })
+            .update({ status: newStatus })
+            .returning('*')
+            .then(x => {});
+    };
 };
 
-assignWriteOff = () => {
-    console.log('write off over-due medication as untaken')
-    //update status to 9
+assignMedTaken = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - marked as taken`)
+    const newStatus = 10
+    return connection('meds')
+        .where({ id })
+        .update({ status: newStatus })
+        .returning('*')
+        .then(([med]) => {
+            const { type, due, user_id } = med;
+            const newDue = (due + 86400000)
+            const newMed = [{ user_id, type, due: newDue}]
+            return connection
+                .insert(newMed)
+                .into('meds')
+                .returning('*')
+                .then(x => {});
+        });
+};
+
+assignDiscontinued = (med) => {
+    const { id, due, type, status } = med;
+    console.log(`${id} - marked as discontinued`)
+    const newStatus = 5
+    return connection('meds')
+        .where({ id })
+        .update({ status: newStatus })
+        .returning('*')
+        .then(x => {});
 };
 
 
 module.exports = {
-    assignMedTaken,
     assignPromptBefore,
     assignPromptAt,
-    assignPromptAfterFirst,
-    assignPromptAfterSecond,
-    assignWriteOff
+    assignPromptLate,
+    assignPromptVeryLate,
+    assignWriteOff,
+    assignMedTaken,
+    assignDiscontinued
 }

@@ -1,4 +1,4 @@
-const { getQuiz, postQuiz, patchQuiz, deleteQuiz } = require('../models/');
+const { getQuiz, postQuiz, patchQuiz, deleteQuiz, postQuizAlexa } = require('../models/');
 
 exports.fetchQuiz = (req, res, next) => {
   getQuiz({ ...req.params })
@@ -35,3 +35,17 @@ exports.removeQuiz = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.addQuizAlexa = (req, res, next) => {
+  if (req.headers.amazonid) {
+    const { amazonid: amazon_id } = req.headers;
+    const { body : quizAnswers } = req;
+    return postQuizAlexa({amazon_id, ...quizAnswers})
+      .then(({ confirmation }) => {
+        res.status(201).send({ confirmation })
+      })
+      .catch(next);
+  }
+  next();
+};
+

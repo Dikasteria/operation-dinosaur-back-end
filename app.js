@@ -7,13 +7,18 @@ const {
   handlePsqlErrors,
   handleServerErrors
 } = require('./errors');
+const { recurQuery } = require('./server/serverFunctions/serverMonitor')
+
 
 app.use(express.json());
 app.use(cors());
 app.use('/api', apiRouter);
 
-app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
+app.use(handleCustomErrors);
 app.use(handleServerErrors);
+
+recurQuery();
+
 
 module.exports = { app };

@@ -15,9 +15,9 @@ const baseConfig = {
 const customConfig = {
   development: {
     connection: {
-      database: 'op_dino_dev'
-      // username: login.username,
-      // password: login.password
+      database: 'op_dino_dev',
+      username: login.username,
+      password: login.password
     }
   },
   test: {

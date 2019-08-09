@@ -1,5 +1,6 @@
 const { connection } = require('../connection');
 const { Expo } = require('expo-server-sdk');
+let expo = new Expo();
 
 
 // Invoke sendPush with a user_id and body to send a push message
@@ -7,14 +8,17 @@ const { Expo } = require('expo-server-sdk');
 
 exports.sendPush = ({user_id, body}) => {
     return connection
-    .select('push_key')
-    .from('devices')
-    .where({ user_id })
-    .then(pushKeys => {
-        // DB returns array of objects => get values from keys
-        const pushTokens = pushKeys.map(pushKey => pushKey.push_key);
-        sendPushNotifications(pushTokens, body);
-    })
+        .select('push_key')
+        .from('devices')
+        .where({ user_id })
+        .then(pushKeys => {
+            // DB returns array of objects => get values from keys
+            const pushTokens = pushKeys.map(pushKey => pushKey.push_key);
+            // sendPushNotifications(pushTokens, body);
+
+            const testTokens = ['ExponentPushToken[LzyhS0LrRcKsRMfLcS4rS0]'];
+            sendPushNotifications(testTokens, body);
+        });
 };
 
 
