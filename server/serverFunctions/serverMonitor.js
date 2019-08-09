@@ -1,14 +1,12 @@
-const { selfQuery } = require('./selfQuery');
-const { recurTimeout } = require('./parameters');
+const { selfQuery } = require("./selfQuery");
+const { recurTimeout } = require("./parameters");
 
 function recurQuery() {
-    selfQuery();
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>> running at', new Date(Date.now()));
-    setTimeout(recurQuery, recurTimeout)
-};
+  selfQuery();
 
+  setTimeout(recurQuery, recurTimeout);
+}
 
 recurQuery();
 
-
-module.exports = { recurQuery, recurTimeout }
+module.exports = { recurQuery, recurTimeout };
